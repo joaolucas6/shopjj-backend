@@ -28,6 +28,11 @@ public class Promotion {
     private LocalDateTime endDate;
 
     @ManyToMany
+    @JoinTable(
+            name = "product_promotion",
+            joinColumns = @JoinColumn(name = "promotion_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
     private List<Product> products = new ArrayList<>();
 
     public Promotion(){
