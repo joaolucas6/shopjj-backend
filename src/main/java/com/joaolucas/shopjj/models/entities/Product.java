@@ -36,9 +36,6 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<Promotion> promotions =  new ArrayList<>();
 
-    @OneToMany(mappedBy = "product")
-    private List<Coupon> coupons = new ArrayList<>();
-
     public Product (){
 
     }
@@ -116,14 +113,6 @@ public class Product {
         this.promotions = promotions;
     }
 
-    public List<Coupon> getCoupons() {
-        return coupons;
-    }
-
-    public void setCoupons(List<Coupon> coupons) {
-        this.coupons = coupons;
-    }
-
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -148,7 +137,6 @@ public class Product {
                 ", categories=" + categories +
                 ", reviews=" + reviews +
                 ", promotions=" + promotions +
-                ", coupons=" + coupons +
                 '}';
     }
 }
