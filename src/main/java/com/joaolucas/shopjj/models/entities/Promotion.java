@@ -1,7 +1,6 @@
 package com.joaolucas.shopjj.models.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,11 +11,23 @@ import java.util.Objects;
 @Table(name = "tb_promotion")
 public class Promotion {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "percentage")
     private Double percentage;
+
+    @Column(name = "start_date")
     private LocalDateTime startDate;
+
+    @Column(name = "end_date")
     private LocalDateTime endDate;
+
+    @ManyToMany
     private List<Product> products = new ArrayList<>();
 
     public Promotion(){
