@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -38,6 +40,9 @@ public class Order {
 
     @ElementCollection
     private HashMap<Integer, Product> products = new HashMap<>();
+
+    @ElementCollection
+    private List<Coupon> coupons = new ArrayList<>();
 
     public Order(){
 
@@ -117,6 +122,14 @@ public class Order {
         this.products = products;
     }
 
+    public List<Coupon> getCoupons() {
+        return coupons;
+    }
+
+    public void setCoupons(List<Coupon> coupons) {
+        this.coupons = coupons;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -141,6 +154,7 @@ public class Order {
                 ", paymentMethod=" + paymentMethod +
                 ", orderStatus=" + orderStatus +
                 ", products=" + products +
+                ", coupons=" + coupons +
                 '}';
     }
 }
