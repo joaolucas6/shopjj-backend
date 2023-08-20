@@ -39,7 +39,7 @@ public class Order {
     private OrderStatus orderStatus;
 
     @ElementCollection
-    private HashMap<Integer, Product> products = new HashMap<>();
+    private HashMap<Integer, Product> inventory = new HashMap<>();
 
     @ElementCollection
     private List<Coupon> coupons = new ArrayList<>();
@@ -114,12 +114,12 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public HashMap<Integer, Product> getProducts() {
-        return products;
+    public HashMap<Integer, Product> getInventory() {
+        return inventory;
     }
 
-    public void setProducts(HashMap<Integer, Product> products) {
-        this.products = products;
+    public void setInventory(HashMap<Integer, Product> inventory) {
+        this.inventory = inventory;
     }
 
     public List<Coupon> getCoupons() {
@@ -153,7 +153,7 @@ public class Order {
                 ", instant=" + instant +
                 ", paymentMethod=" + paymentMethod +
                 ", orderStatus=" + orderStatus +
-                ", products=" + products +
+                ", inventory=" + inventory +
                 ", coupons=" + coupons +
                 '}';
     }
