@@ -18,7 +18,7 @@ public class OrderDTO {
     private LocalDateTime instant;
     private PaymentMethod paymentMethod;
     private OrderStatus orderStatus;
-    private HashMap<Integer, Long> inventory = new HashMap<>();
+    private HashMap<Long, Integer> inventory = new HashMap<>();
     private List<Long> couponsId;
 
     public OrderDTO(){
@@ -35,11 +35,11 @@ public class OrderDTO {
         setOrderStatus(order.getOrderStatus());
         setCouponsId(order.getCoupons().stream().map(Coupon::getId).toList());
 
-        for(Map.Entry<Integer, Product> entry : order.getInventory().entrySet()){
-            var quantity = entry.getKey();
-            var product = entry.getValue();
+        for(Map.Entry<Product, Integer> entry : order.getInventory().entrySet()){
+            var quantity = entry.getValue();
+            var product = entry.getKey();
 
-            inventory.put(quantity, product.getId());
+            inventory.put(product.getId(), quantity);
         }
     }
 
@@ -99,11 +99,11 @@ public class OrderDTO {
         this.orderStatus = orderStatus;
     }
 
-    public HashMap<Integer, Long> getInventory() {
+    public HashMap<Long, Integer> getInventory() {
         return inventory;
     }
 
-    public void setInventory(HashMap<Integer, Long> inventory) {
+    public void setInventory(HashMap<Long, Integer> inventory) {
         this.inventory = inventory;
     }
 

@@ -14,7 +14,6 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private String cpf;
     private Gender gender;
     private Long shoppingCartId;
@@ -31,7 +30,6 @@ public class UserDTO {
         setFirstName(user.getFirstName());
         setLastName(user.getLastName());
         setEmail(user.getEmail());
-        setPassword(user.getPassword());
         setCpf(user.getCpf());
         setGender(user.getGender());
         setShoppingCartId(user.getShoppingCart().getId());
@@ -70,14 +68,6 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getCpf() {
@@ -135,7 +125,6 @@ public class UserDTO {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", cpf='" + cpf + '\'' +
                 ", gender=" + gender +
                 ", shoppingCartId=" + shoppingCartId +
