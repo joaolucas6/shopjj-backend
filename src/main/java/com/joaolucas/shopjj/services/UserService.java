@@ -2,6 +2,7 @@ package com.joaolucas.shopjj.services;
 
 import com.joaolucas.shopjj.models.dto.UserDTO;
 import com.joaolucas.shopjj.models.entities.User;
+import com.joaolucas.shopjj.repositories.ProductRepository;
 import com.joaolucas.shopjj.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     public UserDTO create(UserDTO userDTO){
         User user = new User();
@@ -37,6 +39,4 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow();
         userRepository.delete(user);
     }
-
-
 }
