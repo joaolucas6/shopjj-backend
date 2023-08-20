@@ -3,13 +3,14 @@ package com.joaolucas.shopjj.models.dto;
 import com.joaolucas.shopjj.models.entities.Product;
 import com.joaolucas.shopjj.models.entities.ShoppingCart;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ShoppingCartDTO {
 
     private Long id;
     private Long costumerId;
-    private List<Long> productsId;
+    private HashMap<Long, Integer> inventory = new HashMap<>();
 
     public ShoppingCartDTO() {
     }
@@ -17,7 +18,11 @@ public class ShoppingCartDTO {
     public ShoppingCartDTO(ShoppingCart shoppingCart){
         setId(shoppingCart.getId());
         setCostumerId(shoppingCart.getId());
-        setProductsId(shoppingCart.getProducts().stream().map(Product::getId).toList());
+
+        for(Map.Entry<Product, Integer> entry : shoppingCart.getInventory().entrySet()){
+            inventory.put(entry.getKey().getId(), entry.getValue());
+        }
+
     }
 
     public Long getId() {
@@ -36,12 +41,12 @@ public class ShoppingCartDTO {
         this.costumerId = costumerId;
     }
 
-    public List<Long> getProductsId() {
-        return productsId;
+    public HashMap<Long, Integer> getInventory() {
+        return inventory;
     }
 
-    public void setProductsId(List<Long> productsId) {
-        this.productsId = productsId;
+    public void setInventory(HashMap<Long, Integer> inventory) {
+        this.inventory = inventory;
     }
 
     @Override
@@ -49,7 +54,7 @@ public class ShoppingCartDTO {
         return "ShoppingCartDTO{" +
                 "id=" + id +
                 ", costumerId=" + costumerId +
-                ", productsId=" + productsId +
+                ", inventory=" + inventory +
                 '}';
     }
 }

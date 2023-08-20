@@ -2,8 +2,7 @@ package com.joaolucas.shopjj.models.entities;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Objects;
 
 @Entity
@@ -18,7 +17,7 @@ public class ShoppingCart {
     private User costumer;
 
     @ElementCollection
-    private List<Product> products = new ArrayList<>();
+    private HashMap<Product, Integer> inventory = new HashMap<>();
 
     public ShoppingCart(){
 
@@ -45,12 +44,12 @@ public class ShoppingCart {
         this.costumer = costumer;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public HashMap<Product, Integer> getInventory() {
+        return inventory;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setInventory(HashMap<Product, Integer> inventory) {
+        this.inventory = inventory;
     }
 
     @Override
@@ -71,7 +70,7 @@ public class ShoppingCart {
         return "ShoppingCart{" +
                 "id=" + id +
                 ", costumer=" + costumer +
-                ", products=" + products +
+                ", inventory=" + inventory +
                 '}';
     }
 
