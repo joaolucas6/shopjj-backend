@@ -2,15 +2,23 @@ package com.joaolucas.shopjj.services;
 
 import com.joaolucas.shopjj.models.dto.UserDTO;
 import com.joaolucas.shopjj.models.entities.User;
-import com.joaolucas.shopjj.repositories.ProductRepository;
 import com.joaolucas.shopjj.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ProductRepository productRepository;
+
+    public List<UserDTO> findAll(){
+        return userRepository.findAll().stream().map(UserDTO::new).toList();
+    }
+
+    public UserDTO findById(Long id){
+        return new UserDTO(userRepository.findById(id).orElseThrow());
+    }
 
     public UserDTO create(UserDTO userDTO){
         User user = new User();
