@@ -8,6 +8,9 @@ public class CouponDTO {
     private Long id;
     private String name;
     private String description;
+
+    private Double percentage;
+
     private LocalDateTime validity;
 
     public CouponDTO(){
@@ -53,12 +56,21 @@ public class CouponDTO {
         this.validity = validity;
     }
 
+    public Double getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(Double percentage) {
+        this.percentage = percentage;
+    }
+
     @Override
     public String toString() {
         return "CouponDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", percentage=" + percentage +
                 ", validity=" + validity +
                 '}';
     }

@@ -19,6 +19,9 @@ public class Coupon {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "percentage")
+    private Double percentage;
+
     @Column(name = "validity")
     private LocalDateTime validity;
 
@@ -26,10 +29,11 @@ public class Coupon {
 
     }
 
-    public Coupon(Long id, String name, String description, LocalDateTime validity) {
+    public Coupon(Long id, String name, String description, Double percentage, LocalDateTime validity) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.percentage = percentage;
         this.validity = validity;
     }
 
@@ -66,6 +70,14 @@ public class Coupon {
         this.validity = validity;
     }
 
+    public Double getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(Double percentage) {
+        this.percentage = percentage;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -85,6 +97,7 @@ public class Coupon {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", percentage=" + percentage +
                 ", validity=" + validity +
                 '}';
     }
