@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class OrderDTO {
     private Long id;
-    private Long clientId;
+    private Long costumerId;
     private BigDecimal totalPrice;
     private Long addressId;
     private LocalDateTime instant;
@@ -27,7 +27,7 @@ public class OrderDTO {
 
     public OrderDTO(Order order){
         setId(order.getId());
-        setClientId(order.getClient().getId());
+        setCostumerId(order.getCostumer().getId());
         setTotalPrice(order.getTotalPrice());
         setAddressId(order.getAddress().getId());
         setInstant(order.getInstant());
@@ -51,12 +51,12 @@ public class OrderDTO {
         this.id = id;
     }
 
-    public Long getClientId() {
-        return clientId;
+    public Long getCostumerId() {
+        return costumerId;
     }
 
-    public void setClientId(Long clientId) {
-        this.clientId = clientId;
+    public void setCostumerId(Long costumerId) {
+        this.costumerId = costumerId;
     }
 
     public BigDecimal getTotalPrice() {
@@ -119,7 +119,7 @@ public class OrderDTO {
     public String toString() {
         return "OrderDTO{" +
                 "id=" + id +
-                ", clientId=" + clientId +
+                ", costumerId=" + costumerId +
                 ", totalPrice=" + totalPrice +
                 ", addressId=" + addressId +
                 ", instant=" + instant +

@@ -20,8 +20,8 @@ public class Order {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
-    private User client;
+    @JoinColumn(name = "costumer_id")
+    private User costumer;
 
     @Column(name = "total_price")
     private BigDecimal totalPrice;
@@ -48,9 +48,9 @@ public class Order {
 
     }
 
-    public Order(Long id, User client, BigDecimal totalPrice, Address address, LocalDateTime instant, PaymentMethod paymentMethod, OrderStatus orderStatus) {
+    public Order(Long id, User costumer, BigDecimal totalPrice, Address address, LocalDateTime instant, PaymentMethod paymentMethod, OrderStatus orderStatus) {
         this.id = id;
-        this.client = client;
+        this.costumer = costumer;
         this.totalPrice = totalPrice;
         this.address = address;
         this.instant = instant;
@@ -66,12 +66,12 @@ public class Order {
         this.id = id;
     }
 
-    public User getClient() {
-        return client;
+    public User getCostumer() {
+        return costumer;
     }
 
-    public void setClient(User client) {
-        this.client = client;
+    public void setCostumer(User costumer) {
+        this.costumer = costumer;
     }
 
     public BigDecimal getTotalPrice() {
@@ -147,7 +147,7 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", client=" + client +
+                ", costumer=" + costumer +
                 ", totalPrice=" + totalPrice +
                 ", address=" + address +
                 ", instant=" + instant +
