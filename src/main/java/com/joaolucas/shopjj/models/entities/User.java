@@ -33,16 +33,16 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private ShoppingCart shoppingCart;
 
-    @OneToMany(mappedBy = "costumer")
+    @OneToMany(mappedBy = "costumer", cascade = CascadeType.REMOVE)
     private List<Order> orders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "resident")
+    @OneToMany(mappedBy = "resident", cascade = CascadeType.REMOVE)
     private List<Address> addresses = new ArrayList<>();
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     private List<Review> reviews = new ArrayList<>();
 
     public User(){

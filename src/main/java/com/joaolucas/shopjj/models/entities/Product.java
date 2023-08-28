@@ -33,7 +33,7 @@ public class Product {
     @ManyToMany(mappedBy = "products")
     private List<Category> categories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
