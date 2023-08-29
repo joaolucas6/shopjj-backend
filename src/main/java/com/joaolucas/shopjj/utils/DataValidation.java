@@ -5,6 +5,7 @@ import com.joaolucas.shopjj.models.dto.*;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class DataValidation {
 
@@ -12,8 +13,8 @@ public class DataValidation {
         if(isAllFieldsNull(userDTO)) return false;
         if(userDTO.getFirstName().length() > 50 || userDTO.getFirstName().isBlank()) return false;
         if(userDTO.getLastName().length() > 50 || userDTO.getLastName().isBlank()) return false;
-        if(userDTO.getEmail().isBlank()) return false;
-        if(userDTO.getCpf().isBlank()) return false;
+        if(userDTO.getEmail().isBlank() || !isEmailValid(userDTO.getEmail())) return false;
+        if(userDTO.getCpf().isBlank() || !isCpfValid(userDTO.getCpf())) return false;
 
         return true;
     }
@@ -82,6 +83,42 @@ public class DataValidation {
         if(!(addressDTO.getCep().length() == 8) || addressDTO.getCep().isBlank()) return false;
 
         return true;
+    }
+
+    public static boolean isCpfValid(String value){
+        String cpf = value.replace(".", "").replace("-", "");
+
+        String firstPart = cpf.substring(0, 9);
+
+        int firstPartResult = 0;
+
+        for(int i = 10, j = 0; i >= 2; i--, j++){
+            int number = Integer.parseInt(String.valueOf(firstPart.charAt(j)));
+
+            number *= i;
+            firstPartResult += number;
+        }
+
+        if(firstPartResult * 10 % 11 !=  Integer.parseInt(String.valueOf(cpf.charAt(9)))) return false;
+
+        int secondPartResult = 0;
+
+        for(int i = 11, j = 0; i >= 2; i--, j++){
+
+            int number = Integer.parseInt(String.valueOf(cpf.charAt(j)));
+
+            number *= i;
+            secondPartResult += number;
+        }
+
+        if(secondPartResult * 10 % 11 != Integer.parseInt(String.valueOf(cpf.charAt(10)))) return false;
+
+        return true;
+    }
+
+    public static boolean isEmailValid(String email){
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+        return pattern.matcher(email).matches();
     }
 
     public static boolean isAllFieldsNull(Object object){
