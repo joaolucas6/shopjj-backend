@@ -1,5 +1,7 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.exceptions.BadRequestException;
+import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.ProductDTO;
 import com.joaolucas.shopjj.models.entities.Product;
 import com.joaolucas.shopjj.repositories.ProductRepository;
@@ -20,11 +22,11 @@ public class ProductService {
     }
 
     public ProductDTO findById(Long id){
-        return new ProductDTO(productRepository.findById(id).orElseThrow());
+        return new ProductDTO(productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product was not found with ID: " + id)));
     }
 
     public ProductDTO create(ProductDTO productDTO){
-        if(!DataValidation.isProductInfoValid(productDTO)) throw new RuntimeException();
+        if(!DataValidation.isProductInfoValid(productDTO)) throw new BadRequestException("Product info is invalid");
 
         Product product = new Product();
         product.setName(product.getName());
@@ -37,9 +39,9 @@ public class ProductService {
     }
 
     public ProductDTO update(Long id, ProductDTO productDTO){
-        if(!DataValidation.isProductInfoValid(productDTO)) throw new RuntimeException();
+        if(!DataValidation.isProductInfoValid(productDTO)) throw new BadRequestException("Product info is invalid");
 
-        Product product = productRepository.findById(id).orElseThrow();
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product was not found with ID: " + id));
 
         if(productDTO.getName() != null) product.setName(productDTO.getName());
         if(productDTO.getDescription() != null) product.setDescription(productDTO.getDescription());
@@ -51,7 +53,7 @@ public class ProductService {
     }
 
     public void delete(Long id){
-        Product product = productRepository.findById(id).orElseThrow();
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product was not found with ID: " + id));
         productRepository.delete(product);
     }
 
