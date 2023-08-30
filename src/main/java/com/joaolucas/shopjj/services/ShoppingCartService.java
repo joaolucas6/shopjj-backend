@@ -1,5 +1,6 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.ShoppingCartDTO;
 import com.joaolucas.shopjj.models.entities.Product;
 import com.joaolucas.shopjj.models.entities.ShoppingCart;
@@ -24,14 +25,14 @@ public class ShoppingCartService {
     }
 
     public ShoppingCartDTO findById(Long id){
-        return new ShoppingCartDTO(shoppingCartRepository.findById(id).orElseThrow());
+        return new ShoppingCartDTO(shoppingCartRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + id)));
     }
 
     public void addItems(Long shoppingCartId, HashMap<Long, Integer> items){
-        ShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartId).orElseThrow();
+        ShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartId).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + shoppingCartId));
 
         for(Map.Entry<Long, Integer> item : items.entrySet()){
-            Product product = productRepository.findById(item.getKey()).orElseThrow();
+            Product product = productRepository.findById(item.getKey()).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + item.getKey()));
 
             if(shoppingCart.getInventory().containsKey(product)){
                 Integer oldValue = shoppingCart.getInventory().get(product);
@@ -46,10 +47,10 @@ public class ShoppingCartService {
     }
 
     public void removeItems(Long shoppingCartId, HashMap<Long, Integer> items){
-        ShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartId).orElseThrow();
+        ShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartId).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + shoppingCartId));
 
         for(Map.Entry<Long, Integer> item : items.entrySet()) {
-            Product product = productRepository.findById(item.getKey()).orElseThrow();
+            Product product = productRepository.findById(item.getKey()).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + item.getKey()));
             shoppingCart.getInventory().remove(product);
         }
 
