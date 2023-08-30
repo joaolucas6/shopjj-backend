@@ -1,5 +1,7 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.exceptions.BadRequestException;
+import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.ReviewDTO;
 import com.joaolucas.shopjj.models.entities.Product;
 import com.joaolucas.shopjj.models.entities.Review;
@@ -26,14 +28,14 @@ public class ReviewService {
     }
 
     public ReviewDTO findById(Long id){
-        return new ReviewDTO(reviewRepository.findById(id).orElseThrow());
+        return new ReviewDTO(reviewRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Review was not found with ID: " + id)));
     }
 
     public ReviewDTO create(Long authorId, Long productId, ReviewDTO reviewDTO){
-        if(!DataValidation.isReviewInfoValid(reviewDTO)) throw new RuntimeException();
+        if(!DataValidation.isReviewInfoValid(reviewDTO)) throw new BadRequestException("Review info is invalid!");
 
-        User author = userRepository.findById(authorId).orElseThrow();
-        Product product = productRepository.findById(productId).orElseThrow();
+        User author = userRepository.findById(authorId).orElseThrow(() -> new ResourceNotFoundException("User was not found with ID: " + authorId));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product was not found with ID: " + productId));
         Review review = new Review();
 
         review.setAuthor(author);
@@ -52,9 +54,9 @@ public class ReviewService {
     }
 
     public ReviewDTO update(Long id, ReviewDTO reviewDTO){
-        if(!DataValidation.isReviewInfoValid(reviewDTO)) throw new RuntimeException();
+        if(!DataValidation.isReviewInfoValid(reviewDTO)) throw new BadRequestException("Review info is invalid!");
 
-        Review review = reviewRepository.findById(id).orElseThrow();
+        Review review = reviewRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Review was not found with ID: " + id));
         if(reviewDTO.getRating() != null) review.setRating(reviewDTO.getRating());
         if(reviewDTO.getCommentary() != null) review.setCommentary(reviewDTO.getCommentary());
 
@@ -62,7 +64,7 @@ public class ReviewService {
     }
 
     public void delete(Long id){
-        Review review = reviewRepository.findById(id).orElseThrow();
+        Review review = reviewRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Review was not found with ID: " + id));
         reviewRepository.delete(review);
     }
 }
