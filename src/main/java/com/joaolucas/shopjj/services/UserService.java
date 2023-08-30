@@ -1,5 +1,7 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.exceptions.BadRequestException;
+import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.UserDTO;
 import com.joaolucas.shopjj.models.entities.ShoppingCart;
 import com.joaolucas.shopjj.models.entities.User;
@@ -23,11 +25,11 @@ public class UserService {
     }
 
     public UserDTO findById(Long id){
-        return new UserDTO(userRepository.findById(id).orElseThrow());
+        return new UserDTO(userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User was not found with ID: " + id)));
     }
 
     public UserDTO create(UserDTO userDTO){
-        if(!DataValidation.isUserInfoValid(userDTO)) throw new RuntimeException();
+        if(!DataValidation.isUserInfoValid(userDTO)) throw new BadRequestException("User info is invalid!");
 
         User user = new User();
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -46,8 +48,8 @@ public class UserService {
     }
 
     public UserDTO update(Long id, UserDTO userDTO){
-        if(!DataValidation.isUserInfoValid(userDTO)) throw new RuntimeException();
-        User user = userRepository.findById(id).orElseThrow();
+        if(!DataValidation.isUserInfoValid(userDTO)) throw new BadRequestException("User info is invalid!");
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User was not found with ID: " + id));
 
         if(userDTO.getFirstName() != null) user.setFirstName(userDTO.getFirstName());
         if(userDTO.getLastName() != null) user.setLastName(userDTO.getLastName());
@@ -58,7 +60,7 @@ public class UserService {
     }
 
     public void delete(Long id){
-        User user = userRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User was not found with ID: " + id));
         userRepository.delete(user);
     }
 
