@@ -1,5 +1,8 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.exceptions.BadRequestException;
+import com.joaolucas.shopjj.exceptions.ConflictException;
+import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.OrderDTO;
 import com.joaolucas.shopjj.models.entities.*;
 import com.joaolucas.shopjj.models.enums.OrderStatus;
@@ -29,28 +32,28 @@ public class OrderService {
     }
 
     public OrderDTO findById(Long id){
-        return new OrderDTO(orderRepository.findById(id).orElseThrow());
+        return new OrderDTO(orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order was not found with ID: " + id)));
     }
 
     public OrderDTO create(Long costumerId, OrderDTO orderDTO){
-        if(!DataValidation.isOrderInfoValid(orderDTO)) throw new RuntimeException();
+        if(!DataValidation.isOrderInfoValid(orderDTO)) throw new BadRequestException("Order info is invalid!");
 
         Order order = new Order();
-        Address address = addressRepository.findById(orderDTO.getAddressId()).orElseThrow();
-        User costumer = userRepository.findById(costumerId).orElseThrow();
+        Address address = addressRepository.findById(orderDTO.getAddressId()).orElseThrow(() -> new ResourceNotFoundException("Address was not found with ID: " + orderDTO.getAddressId()));
+        User costumer = userRepository.findById(costumerId).orElseThrow(() -> new ResourceNotFoundException("User was not found with ID: " + costumerId));
 
         order.setAddress(address);
         order.setInstant(LocalDateTime.now());
         order.setPaymentMethod(orderDTO.getPaymentMethod());
         order.setOrderStatus(OrderStatus.PENDING);
         order.setCostumer(costumer);
-        order.setCoupons(orderDTO.getCouponsId().stream().map(couponId -> couponRepository.findById(couponId).orElseThrow()).toList());
+        order.setCoupons(orderDTO.getCouponsId().stream().map(couponId -> couponRepository.findById(couponId).orElseThrow(() -> new ResourceNotFoundException("Coupon was not found with ID: " + couponId))).toList());
         order.setTotalPrice(BigDecimal.valueOf(0));
 
         HashMap<Product, Integer> inventory = new HashMap<>();
 
         for(Map.Entry<Long, Integer> entry : orderDTO.getInventory().entrySet()){
-            Product product = productRepository.findById(entry.getKey()).orElseThrow();
+            Product product = productRepository.findById(entry.getKey()).orElseThrow(() -> new ResourceNotFoundException("Product was not found with ID: " + entry.getKey()));
             inventory.put(product, entry.getValue());
         }
 
@@ -72,8 +75,8 @@ public class OrderService {
         }
 
         orderDTO.getCouponsId().forEach(couponId -> {
-            Coupon coupon = couponRepository.findById(couponId).orElseThrow();
-            if(coupon.getValidity().isBefore(LocalDateTime.now())) throw new RuntimeException();
+            Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new ResourceNotFoundException("Coupon was not found with ID: " + couponId));
+            if(coupon.getValidity().isBefore(LocalDateTime.now())) throw new ConflictException("Coupon is expired!");
             BigDecimal valueToDiscount = order.getTotalPrice().multiply(BigDecimal.valueOf(coupon.getPercentage()));
             order.setTotalPrice(order.getTotalPrice().min(valueToDiscount));
         });
@@ -83,12 +86,12 @@ public class OrderService {
     }
 
     public OrderDTO update(Long id, OrderDTO orderDTO){
-        if(!DataValidation.isOrderInfoValid(orderDTO)) throw new RuntimeException();
+        if(!DataValidation.isOrderInfoValid(orderDTO)) throw new BadRequestException("Order info is invalid!");
 
-        Order order = orderRepository.findById(id).orElseThrow();
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order was not found with ID: " + id));
 
         if(orderDTO.getAddressId() != null) {
-            Address address = addressRepository.findById(orderDTO.getAddressId()).orElseThrow();
+            Address address = addressRepository.findById(orderDTO.getAddressId()).orElseThrow(() -> new ResourceNotFoundException("Address was not found with ID: " + orderDTO.getAddressId()));
             order.setAddress(address);
         }
         if(orderDTO.getPaymentMethod() != null) order.setPaymentMethod(orderDTO.getPaymentMethod());
@@ -98,7 +101,7 @@ public class OrderService {
     }
 
     public void delete(Long id){
-        Order order = orderRepository.findById(id).orElseThrow();
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order was not found with ID: " + id));
         orderRepository.delete(order);
     }
 }
