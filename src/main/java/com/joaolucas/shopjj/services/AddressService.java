@@ -1,5 +1,7 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.exceptions.BadRequestException;
+import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.AddressDTO;
 import com.joaolucas.shopjj.models.entities.Address;
 import com.joaolucas.shopjj.models.entities.User;
@@ -23,14 +25,14 @@ public class AddressService {
     }
 
     public AddressDTO findById(Long id){
-        return new AddressDTO(addressRepository.findById(id).orElseThrow());
+        return new AddressDTO(addressRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Address was not found with ID: " + id)));
     }
 
     public AddressDTO create(Long residentId, AddressDTO addressDTO){
-        if(!DataValidation.isAddressInfoValid(addressDTO)) throw new RuntimeException();
+        if(!DataValidation.isAddressInfoValid(addressDTO)) throw new BadRequestException("Address info is invalid!");
 
         Address address = new Address();
-        User resident = userRepository.findById(residentId).orElseThrow();
+        User resident = userRepository.findById(residentId).orElseThrow(() -> new ResourceNotFoundException("User was not found with ID: " + residentId));
 
         address.setResident(resident);
         address.setState(addressDTO.getState());
@@ -44,9 +46,9 @@ public class AddressService {
     }
 
     public AddressDTO update(Long id, AddressDTO addressDTO){
-        if(!DataValidation.isAddressInfoValid(addressDTO)) throw new RuntimeException();
+        if(!DataValidation.isAddressInfoValid(addressDTO)) throw new BadRequestException("Address info is invalid!");
 
-        Address address = addressRepository.findById(id).orElseThrow();
+        Address address = addressRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Address was not found with ID: " + id));
         if(addressDTO.getState() != null) address.setState(addressDTO.getState());
         if(addressDTO.getCity() != null) address.setCity(addressDTO.getCity());
         if(addressDTO.getStreet() != null) address.setStreet(addressDTO.getStreet());
@@ -58,7 +60,7 @@ public class AddressService {
     }
 
     public void delete(Long id){
-        Address address = addressRepository.findById(id).orElseThrow();
+        Address address = addressRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Address was not found with ID: " + id));
         addressRepository.delete(address);
     }
 
