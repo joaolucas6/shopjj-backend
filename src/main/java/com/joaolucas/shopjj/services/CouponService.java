@@ -1,5 +1,7 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.exceptions.BadRequestException;
+import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.CouponDTO;
 import com.joaolucas.shopjj.models.entities.Coupon;
 import com.joaolucas.shopjj.repositories.CouponRepository;
@@ -20,11 +22,11 @@ public class CouponService {
     }
 
     public CouponDTO findById(Long id){
-        return new CouponDTO(couponRepository.findById(id).orElseThrow());
+        return new CouponDTO(couponRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Coupon was not found with ID: ")));
     }
 
     public CouponDTO create(CouponDTO couponDTO){
-        if(!DataValidation.isCouponInfoValid(couponDTO)) throw new RuntimeException();
+        if(!DataValidation.isCouponInfoValid(couponDTO)) throw new BadRequestException("Coupon info is invalid!");
 
         Coupon coupon = new Coupon();
 
@@ -37,10 +39,10 @@ public class CouponService {
     }
 
     public CouponDTO update(Long id, CouponDTO couponDTO){
-        if(!DataValidation.isCouponInfoValid(couponDTO)) throw new RuntimeException();
+        if(!DataValidation.isCouponInfoValid(couponDTO)) throw new BadRequestException("Coupon info is invalid!");
 
 
-        Coupon coupon = couponRepository.findById(id).orElseThrow();
+        Coupon coupon = couponRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Coupon was not found with ID: "));
 
         if(couponDTO.getName() != null) coupon.setName(couponDTO.getName());
         if(couponDTO.getDescription() != null) coupon.setDescription(couponDTO.getDescription());
@@ -51,7 +53,7 @@ public class CouponService {
     }
 
     public void delete(Long id){
-        Coupon coupon = couponRepository.findById(id).orElseThrow();
+        Coupon coupon = couponRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Coupon was not found with ID: "));
         couponRepository.delete(coupon);
     }
 
