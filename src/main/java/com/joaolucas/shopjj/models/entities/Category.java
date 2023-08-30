@@ -14,10 +14,10 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name", unique = true, length = 100)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 1000)
     private String description;
 
     @ManyToMany

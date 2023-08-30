@@ -12,22 +12,22 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "state")
+    @Column(name = "state", length = 50)
     private String state;
 
-    @Column(name = "city")
+    @Column(name = "city", length = 50)
     private String city;
 
-    @Column(name = "street")
+    @Column(name = "street", length = 150)
     private String street;
 
     @Column(name = "number")
     private Integer number;
 
-    @Column(name = "complement")
+    @Column(name = "complement", length = 150)
     private String complement;
 
-    @Column(name = "cep")
+    @Column(name = "cep", length = 8)
     private String cep;
 
     @ManyToOne

@@ -15,10 +15,10 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name", unique = true, length = 130)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 3000)
     private String description;
 
     @Column(name = "image_url")
