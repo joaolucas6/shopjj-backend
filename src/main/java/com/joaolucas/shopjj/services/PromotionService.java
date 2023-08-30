@@ -1,5 +1,8 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.exceptions.BadRequestException;
+import com.joaolucas.shopjj.exceptions.ConflictException;
+import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.PromotionDTO;
 import com.joaolucas.shopjj.models.entities.Product;
 import com.joaolucas.shopjj.models.entities.Promotion;
@@ -23,11 +26,11 @@ public class PromotionService {
     }
 
     public PromotionDTO findById(Long id){
-        return new PromotionDTO(promotionRepository.findById(id).orElseThrow());
+        return new PromotionDTO(promotionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Promotion was not found with ID: " + id)));
     }
 
     public PromotionDTO create(PromotionDTO promotionDTO){
-        if(!DataValidation.isPromotionInfoValid(promotionDTO)) throw new RuntimeException();
+        if(!DataValidation.isPromotionInfoValid(promotionDTO)) throw new BadRequestException("Promotion info is invalid!");
 
         Promotion promotion = new Promotion();
 
@@ -40,9 +43,9 @@ public class PromotionService {
         return new PromotionDTO(promotionRepository.save(promotion));
     }
     public PromotionDTO update(Long id, PromotionDTO promotionDTO){
-        if(!DataValidation.isPromotionInfoValid(promotionDTO)) throw new RuntimeException();
+        if(!DataValidation.isPromotionInfoValid(promotionDTO)) throw new BadRequestException("Promotion info is invalid!");
 
-        Promotion promotion = promotionRepository.findById(id).orElseThrow();
+        Promotion promotion = promotionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Promotion was not found with ID: " + id));
 
         if(promotionDTO.getDescription() != null) promotion.setDescription(promotionDTO.getDescription());
         if(promotionDTO.getPercentage() != null) promotion.setPercentage(promotionDTO.getPercentage());
@@ -53,14 +56,14 @@ public class PromotionService {
     }
 
     public void delete(Long id){
-        Promotion promotion = promotionRepository.findById(id).orElseThrow();
+        Promotion promotion = promotionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Promotion was not found with ID: " + id));
         promotionRepository.delete(promotion);
     }
 
     public void addProducts(Long promotionId, List<Product> products){
-        Promotion promotion = promotionRepository.findById(promotionId).orElseThrow();
+        Promotion promotion = promotionRepository.findById(promotionId).orElseThrow(() -> new ResourceNotFoundException("Promotion was not found with ID: " + promotionId));
         products.forEach(product -> {
-            if(promotion.getProducts().contains(product)) throw new RuntimeException();
+            if(promotion.getProducts().contains(product)) throw new ConflictException("Product is already on promotion!");
             promotion.getProducts().add(product);
             product.getPromotions().add(promotion);
         });
@@ -70,9 +73,9 @@ public class PromotionService {
     }
 
     public void removeProducts(Long promotionId, List<Product> products){
-        Promotion promotion = promotionRepository.findById(promotionId).orElseThrow();
+        Promotion promotion = promotionRepository.findById(promotionId).orElseThrow(() -> new ResourceNotFoundException("Promotion was not found with ID: " + promotionId));
         products.forEach(product -> {
-            if(!promotion.getProducts().contains(product)) throw new RuntimeException();
+            if(!promotion.getProducts().contains(product)) throw new ConflictException("Product is not on promotion!");
             promotion.getProducts().remove(product);
             product.getPromotions().remove(promotion);
         });
