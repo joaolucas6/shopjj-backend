@@ -1,10 +1,7 @@
 package com.joaolucas.shopjj.services;
 
 import com.joaolucas.shopjj.models.dto.OrderDTO;
-import com.joaolucas.shopjj.models.entities.Address;
-import com.joaolucas.shopjj.models.entities.Order;
-import com.joaolucas.shopjj.models.entities.Product;
-import com.joaolucas.shopjj.models.entities.User;
+import com.joaolucas.shopjj.models.entities.*;
 import com.joaolucas.shopjj.models.enums.OrderStatus;
 import com.joaolucas.shopjj.repositories.*;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +60,14 @@ public class OrderService {
 
             order.setTotalPrice(order.getTotalPrice().add(product.getPrice().multiply(BigDecimal.valueOf(quantity))));
         }
+
+        orderDTO.getCouponsId().forEach(couponId -> {
+            Coupon coupon = couponRepository.findById(couponId).orElseThrow();
+            if(coupon.getValidity().isBefore(LocalDateTime.now())) throw new RuntimeException();
+            BigDecimal valueToDiscount = order.getTotalPrice().multiply(BigDecimal.valueOf(coupon.getPercentage()));
+            order.setTotalPrice(order.getTotalPrice().min(valueToDiscount));
+        });
+
 
         return new OrderDTO(orderRepository.save(order));
     }
