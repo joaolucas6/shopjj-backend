@@ -5,6 +5,7 @@ import com.joaolucas.shopjj.models.entities.Category;
 import com.joaolucas.shopjj.models.entities.Product;
 import com.joaolucas.shopjj.repositories.CategoryRepository;
 import com.joaolucas.shopjj.repositories.ProductRepository;
+import com.joaolucas.shopjj.utils.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,8 @@ public class CategoryService {
     }
 
     public CategoryDTO create(CategoryDTO categoryDTO){
+        if(!DataValidation.isCategoryInfoValid(categoryDTO)) throw new RuntimeException();
+
         Category category = new Category();
 
         category.setName(categoryDTO.getName());
@@ -35,6 +38,8 @@ public class CategoryService {
     }
 
     public CategoryDTO update(Long id, CategoryDTO categoryDTO){
+        if(!DataValidation.isCategoryInfoValid(categoryDTO)) throw new RuntimeException();
+
         Category category = categoryRepository.findById(id).orElseThrow();
         if(categoryDTO.getName() != null) category.setName(categoryDTO.getName());
         if(categoryDTO.getDescription() != null) category.setDescription(categoryDTO.getDescription());

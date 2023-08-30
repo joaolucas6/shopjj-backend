@@ -7,6 +7,7 @@ import com.joaolucas.shopjj.models.entities.User;
 import com.joaolucas.shopjj.repositories.ProductRepository;
 import com.joaolucas.shopjj.repositories.ReviewRepository;
 import com.joaolucas.shopjj.repositories.UserRepository;
+import com.joaolucas.shopjj.utils.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,8 @@ public class ReviewService {
     }
 
     public ReviewDTO create(Long authorId, Long productId, ReviewDTO reviewDTO){
+        if(!DataValidation.isReviewInfoValid(reviewDTO)) throw new RuntimeException();
+
         User author = userRepository.findById(authorId).orElseThrow();
         Product product = productRepository.findById(productId).orElseThrow();
         Review review = new Review();
@@ -49,6 +52,8 @@ public class ReviewService {
     }
 
     public ReviewDTO update(Long id, ReviewDTO reviewDTO){
+        if(!DataValidation.isReviewInfoValid(reviewDTO)) throw new RuntimeException();
+
         Review review = reviewRepository.findById(id).orElseThrow();
         if(reviewDTO.getRating() != null) review.setRating(reviewDTO.getRating());
         if(reviewDTO.getCommentary() != null) review.setCommentary(reviewDTO.getCommentary());

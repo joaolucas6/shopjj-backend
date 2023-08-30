@@ -3,6 +3,7 @@ package com.joaolucas.shopjj.services;
 import com.joaolucas.shopjj.models.dto.CouponDTO;
 import com.joaolucas.shopjj.models.entities.Coupon;
 import com.joaolucas.shopjj.repositories.CouponRepository;
+import com.joaolucas.shopjj.utils.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,8 @@ public class CouponService {
     }
 
     public CouponDTO create(CouponDTO couponDTO){
+        if(!DataValidation.isCouponInfoValid(couponDTO)) throw new RuntimeException();
+
         Coupon coupon = new Coupon();
 
         coupon.setName(couponDTO.getName());
@@ -34,6 +37,9 @@ public class CouponService {
     }
 
     public CouponDTO update(Long id, CouponDTO couponDTO){
+        if(!DataValidation.isCouponInfoValid(couponDTO)) throw new RuntimeException();
+
+
         Coupon coupon = couponRepository.findById(id).orElseThrow();
 
         if(couponDTO.getName() != null) coupon.setName(couponDTO.getName());

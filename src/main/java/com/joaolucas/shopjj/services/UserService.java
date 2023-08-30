@@ -5,6 +5,7 @@ import com.joaolucas.shopjj.models.entities.ShoppingCart;
 import com.joaolucas.shopjj.models.entities.User;
 import com.joaolucas.shopjj.repositories.ShoppingCartRepository;
 import com.joaolucas.shopjj.repositories.UserRepository;
+import com.joaolucas.shopjj.utils.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,8 @@ public class UserService {
     }
 
     public UserDTO create(UserDTO userDTO){
+        if(!DataValidation.isUserInfoValid(userDTO)) throw new RuntimeException();
+
         User user = new User();
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setCostumer(user);
@@ -43,6 +46,7 @@ public class UserService {
     }
 
     public UserDTO update(Long id, UserDTO userDTO){
+        if(!DataValidation.isUserInfoValid(userDTO)) throw new RuntimeException();
         User user = userRepository.findById(id).orElseThrow();
 
         if(userDTO.getFirstName() != null) user.setFirstName(userDTO.getFirstName());

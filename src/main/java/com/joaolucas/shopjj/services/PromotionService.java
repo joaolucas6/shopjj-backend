@@ -5,6 +5,7 @@ import com.joaolucas.shopjj.models.entities.Product;
 import com.joaolucas.shopjj.models.entities.Promotion;
 import com.joaolucas.shopjj.repositories.ProductRepository;
 import com.joaolucas.shopjj.repositories.PromotionRepository;
+import com.joaolucas.shopjj.utils.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,8 @@ public class PromotionService {
     }
 
     public PromotionDTO create(PromotionDTO promotionDTO){
+        if(!DataValidation.isPromotionInfoValid(promotionDTO)) throw new RuntimeException();
+
         Promotion promotion = new Promotion();
 
         promotion.setDescription(promotion.getDescription());
@@ -37,6 +40,8 @@ public class PromotionService {
         return new PromotionDTO(promotionRepository.save(promotion));
     }
     public PromotionDTO update(Long id, PromotionDTO promotionDTO){
+        if(!DataValidation.isPromotionInfoValid(promotionDTO)) throw new RuntimeException();
+
         Promotion promotion = promotionRepository.findById(id).orElseThrow();
 
         if(promotionDTO.getDescription() != null) promotion.setDescription(promotionDTO.getDescription());

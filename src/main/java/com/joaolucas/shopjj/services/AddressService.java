@@ -5,6 +5,7 @@ import com.joaolucas.shopjj.models.entities.Address;
 import com.joaolucas.shopjj.models.entities.User;
 import com.joaolucas.shopjj.repositories.AddressRepository;
 import com.joaolucas.shopjj.repositories.UserRepository;
+import com.joaolucas.shopjj.utils.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,8 @@ public class AddressService {
     }
 
     public AddressDTO create(Long residentId, AddressDTO addressDTO){
+        if(!DataValidation.isAddressInfoValid(addressDTO)) throw new RuntimeException();
+
         Address address = new Address();
         User resident = userRepository.findById(residentId).orElseThrow();
 
@@ -41,6 +44,8 @@ public class AddressService {
     }
 
     public AddressDTO update(Long id, AddressDTO addressDTO){
+        if(!DataValidation.isAddressInfoValid(addressDTO)) throw new RuntimeException();
+
         Address address = addressRepository.findById(id).orElseThrow();
         if(addressDTO.getState() != null) address.setState(addressDTO.getState());
         if(addressDTO.getCity() != null) address.setCity(addressDTO.getCity());

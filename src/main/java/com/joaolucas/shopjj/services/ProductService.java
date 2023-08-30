@@ -3,6 +3,7 @@ package com.joaolucas.shopjj.services;
 import com.joaolucas.shopjj.models.dto.ProductDTO;
 import com.joaolucas.shopjj.models.entities.Product;
 import com.joaolucas.shopjj.repositories.ProductRepository;
+import com.joaolucas.shopjj.utils.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,8 @@ public class ProductService {
     }
 
     public ProductDTO create(ProductDTO productDTO){
+        if(!DataValidation.isProductInfoValid(productDTO)) throw new RuntimeException();
+
         Product product = new Product();
         product.setName(product.getName());
         product.setDescription(productDTO.getDescription());
@@ -34,6 +37,8 @@ public class ProductService {
     }
 
     public ProductDTO update(Long id, ProductDTO productDTO){
+        if(!DataValidation.isProductInfoValid(productDTO)) throw new RuntimeException();
+
         Product product = productRepository.findById(id).orElseThrow();
 
         if(productDTO.getName() != null) product.setName(productDTO.getName());

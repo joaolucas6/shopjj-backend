@@ -4,6 +4,7 @@ import com.joaolucas.shopjj.models.dto.OrderDTO;
 import com.joaolucas.shopjj.models.entities.*;
 import com.joaolucas.shopjj.models.enums.OrderStatus;
 import com.joaolucas.shopjj.repositories.*;
+import com.joaolucas.shopjj.utils.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,8 @@ public class OrderService {
     }
 
     public OrderDTO create(Long costumerId, OrderDTO orderDTO){
+        if(!DataValidation.isOrderInfoValid(orderDTO)) throw new RuntimeException();
+
         Order order = new Order();
         Address address = addressRepository.findById(orderDTO.getAddressId()).orElseThrow();
         User costumer = userRepository.findById(costumerId).orElseThrow();
@@ -80,6 +83,8 @@ public class OrderService {
     }
 
     public OrderDTO update(Long id, OrderDTO orderDTO){
+        if(!DataValidation.isOrderInfoValid(orderDTO)) throw new RuntimeException();
+
         Order order = orderRepository.findById(id).orElseThrow();
 
         if(orderDTO.getAddressId() != null) {
