@@ -58,6 +58,13 @@ public class OrderService {
             Product product = entry.getKey();
             Integer quantity = entry.getValue();
 
+            for(Promotion promotion : product.getPromotions()){
+                if(promotion.getStartDate().isBefore(LocalDateTime.now()) && promotion.getEndDate().isAfter(LocalDateTime.now())){
+                    BigDecimal valueToDiscount = product.getPrice().multiply(BigDecimal.valueOf(promotion.getPercentage()));
+                    product.setPrice(product.getPrice().min(valueToDiscount));
+                }
+            }
+
             order.setTotalPrice(order.getTotalPrice().add(product.getPrice().multiply(BigDecimal.valueOf(quantity))));
         }
 
