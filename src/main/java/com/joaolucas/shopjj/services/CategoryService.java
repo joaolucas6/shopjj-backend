@@ -1,5 +1,8 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.exceptions.BadRequestException;
+import com.joaolucas.shopjj.exceptions.ConflictException;
+import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.CategoryDTO;
 import com.joaolucas.shopjj.models.entities.Category;
 import com.joaolucas.shopjj.models.entities.Product;
@@ -23,11 +26,11 @@ public class CategoryService {
     }
 
     public CategoryDTO findById(Long id){
-        return new CategoryDTO(categoryRepository.findById(id).orElseThrow());
+        return new CategoryDTO(categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category was not found with ID: " + id)));
     }
 
     public CategoryDTO create(CategoryDTO categoryDTO){
-        if(!DataValidation.isCategoryInfoValid(categoryDTO)) throw new RuntimeException();
+        if(!DataValidation.isCategoryInfoValid(categoryDTO)) throw new BadRequestException("Category info is invalid!");
 
         Category category = new Category();
 
@@ -38,9 +41,9 @@ public class CategoryService {
     }
 
     public CategoryDTO update(Long id, CategoryDTO categoryDTO){
-        if(!DataValidation.isCategoryInfoValid(categoryDTO)) throw new RuntimeException();
+        if(!DataValidation.isCategoryInfoValid(categoryDTO)) throw new BadRequestException("Category info is invalid!");
 
-        Category category = categoryRepository.findById(id).orElseThrow();
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category was not found with ID: " + id));
         if(categoryDTO.getName() != null) category.setName(categoryDTO.getName());
         if(categoryDTO.getDescription() != null) category.setDescription(categoryDTO.getDescription());
 
@@ -49,15 +52,15 @@ public class CategoryService {
     }
 
     public void delete(Long id){
-        Category category = categoryRepository.findById(id).orElseThrow();
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category was not found with ID: " + id));
         categoryRepository.delete(category);
     }
 
     public void addProduct(Long categoryId, Long productId){
-        Category category = categoryRepository.findById(categoryId).orElseThrow();
-        Product product = productRepository.findById(productId).orElseThrow();
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category was not found with ID: " + categoryId));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product was not found with ID: " + productId));
 
-        if(category.getProducts().contains(product) || product.getCategories().contains(category)) throw new RuntimeException();
+        if(category.getProducts().contains(product) || product.getCategories().contains(category)) throw new ConflictException("Product is already added in category!");
 
         category.getProducts().add(product);
         product.getCategories().add(category);
@@ -67,10 +70,10 @@ public class CategoryService {
     }
 
     public void removeProduct(Long categoryId, Long productId){
-        Category category = categoryRepository.findById(categoryId).orElseThrow();
-        Product product = productRepository.findById(productId).orElseThrow();
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category was not found with ID: " + categoryId));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product was not found with ID: " + productId));
 
-        if(!category.getProducts().contains(product) || !product.getCategories().contains(category)) throw new RuntimeException();
+        if(!category.getProducts().contains(product) || !product.getCategories().contains(category)) throw new ConflictException("Product is not in category list");
 
         category.getProducts().remove(product);
         product.getCategories().remove(category);
