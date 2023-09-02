@@ -1,5 +1,6 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.controllers.ProductController;
 import com.joaolucas.shopjj.exceptions.BadRequestException;
 import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.ProductDTO;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -18,11 +22,11 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public List<ProductDTO> findAll(){
-        return productRepository.findAll().stream().map(ProductDTO::new).toList();
+        return productRepository.findAll().stream().map(product -> new ProductDTO(product).add(linkTo(methodOn(ProductController.class).findById(product.getId())).withSelfRel())).toList();
     }
 
     public ProductDTO findById(Long id){
-        return new ProductDTO(productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product was not found with ID: " + id)));
+        return new ProductDTO(productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product was not found with ID: " + id))).add(linkTo(methodOn(ProductController.class).findById(id)).withSelfRel());
     }
 
     public ProductDTO create(ProductDTO productDTO){
@@ -35,7 +39,9 @@ public class ProductService {
         product.setPrice(product.getPrice());
         product.setAvailableQuantity(product.getAvailableQuantity());
 
-        return new ProductDTO(productRepository.save(product));
+        Product savedProduct = productRepository.save(product);
+
+        return new ProductDTO(savedProduct).add(linkTo(methodOn(ProductController.class).findById(savedProduct.getId())).withSelfRel());
     }
 
     public ProductDTO update(Long id, ProductDTO productDTO){
@@ -49,7 +55,7 @@ public class ProductService {
         if(productDTO.getPrice() != null) product.setPrice(productDTO.getPrice());
         if(productDTO.getAvailableQuantity() != null) product.setAvailableQuantity(product.getAvailableQuantity());
 
-        return new ProductDTO(productRepository.save(product));
+        return new ProductDTO(productRepository.save(product)).add(linkTo(methodOn(ProductController.class).findById(id)).withSelfRel());
     }
 
     public void delete(Long id){
