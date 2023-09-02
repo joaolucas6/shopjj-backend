@@ -1,5 +1,6 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.controllers.ReviewController;
 import com.joaolucas.shopjj.exceptions.BadRequestException;
 import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.ReviewDTO;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -24,11 +28,11 @@ public class ReviewService {
     private final ProductRepository productRepository;
 
     public List<ReviewDTO> findAll(){
-        return reviewRepository.findAll().stream().map(ReviewDTO::new).toList();
+        return reviewRepository.findAll().stream().map(review -> new ReviewDTO(review).add(linkTo(methodOn(ReviewController.class).findById(review.getId())).withSelfRel())).toList();
     }
 
     public ReviewDTO findById(Long id){
-        return new ReviewDTO(reviewRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Review was not found with ID: " + id)));
+        return new ReviewDTO(reviewRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Review was not found with ID: " + id))).add(linkTo(methodOn(ReviewController.class).findById(id)).withSelfRel());
     }
 
     public ReviewDTO create(Long authorId, Long productId, ReviewDTO reviewDTO){
@@ -50,7 +54,8 @@ public class ReviewService {
 
         userRepository.save(author);
         productRepository.save(product);
-        return new ReviewDTO(savedReview);
+
+        return new ReviewDTO(savedReview).add(linkTo(methodOn(ReviewController.class).findById(savedReview.getId())).withSelfRel());
     }
 
     public ReviewDTO update(Long id, ReviewDTO reviewDTO){
@@ -60,7 +65,7 @@ public class ReviewService {
         if(reviewDTO.getRating() != null) review.setRating(reviewDTO.getRating());
         if(reviewDTO.getCommentary() != null) review.setCommentary(reviewDTO.getCommentary());
 
-        return new ReviewDTO(reviewRepository.save(review));
+        return new ReviewDTO(reviewRepository.save(review)).add(linkTo(methodOn(ReviewController.class).findById(id)).withSelfRel());
     }
 
     public void delete(Long id){
