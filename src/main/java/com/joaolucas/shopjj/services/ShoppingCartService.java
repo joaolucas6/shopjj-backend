@@ -1,5 +1,6 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.controllers.ShoppingCartController;
 import com.joaolucas.shopjj.exceptions.BadRequestException;
 import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.ShoppingCartDTO;
@@ -14,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Service
 @RequiredArgsConstructor
 public class ShoppingCartService {
@@ -22,11 +26,11 @@ public class ShoppingCartService {
     private final ProductRepository productRepository;
 
     public List<ShoppingCartDTO> findAll(){
-        return shoppingCartRepository.findAll().stream().map(ShoppingCartDTO::new).toList();
+        return shoppingCartRepository.findAll().stream().map(shoppingCart -> new ShoppingCartDTO(shoppingCart).add(linkTo(methodOn(ShoppingCartController.class).findById(shoppingCart.getId())).withSelfRel())).toList();
     }
 
     public ShoppingCartDTO findById(Long id){
-        return new ShoppingCartDTO(shoppingCartRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + id)));
+        return new ShoppingCartDTO(shoppingCartRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + id))).add(linkTo(methodOn(ShoppingCartController.class).findById(id)).withSelfRel());
     }
 
     public void addItem(Long shoppingCartId, Long productId, Integer quantity){
