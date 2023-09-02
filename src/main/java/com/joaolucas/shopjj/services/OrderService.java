@@ -1,5 +1,6 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.controllers.OrderController;
 import com.joaolucas.shopjj.exceptions.BadRequestException;
 import com.joaolucas.shopjj.exceptions.ConflictException;
 import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
@@ -17,6 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -28,11 +32,11 @@ public class OrderService {
     private final ProductRepository productRepository;
 
     public List<OrderDTO> findAll(){
-        return orderRepository.findAll().stream().map(OrderDTO::new).toList();
+        return orderRepository.findAll().stream().map(order -> new OrderDTO(order).add(linkTo(methodOn(OrderController.class).findById(order.getId())).withSelfRel())).toList();
     }
 
     public OrderDTO findById(Long id){
-        return new OrderDTO(orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order was not found with ID: " + id)));
+        return new OrderDTO(orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order was not found with ID: " + id))).add(linkTo(methodOn(OrderController.class).findById(id)).withSelfRel());
     }
 
     public OrderDTO create(Long costumerId, OrderDTO orderDTO){
@@ -81,8 +85,9 @@ public class OrderService {
             order.setTotalPrice(order.getTotalPrice().min(valueToDiscount));
         });
 
+        Order savedOrder = orderRepository.save(order);
 
-        return new OrderDTO(orderRepository.save(order));
+        return new OrderDTO(savedOrder).add(linkTo(methodOn(OrderController.class).findById(savedOrder.getId())).withSelfRel());
     }
 
     public OrderDTO update(Long id, OrderDTO orderDTO){
@@ -97,7 +102,7 @@ public class OrderService {
         if(orderDTO.getPaymentMethod() != null) order.setPaymentMethod(orderDTO.getPaymentMethod());
         if(orderDTO.getOrderStatus() != null) order.setOrderStatus(orderDTO.getOrderStatus());
 
-        return new OrderDTO(orderRepository.save(order));
+        return new OrderDTO(orderRepository.save(order)).add(linkTo(methodOn(OrderController.class).findById(id)).withSelfRel());
     }
 
     public void delete(Long id){
