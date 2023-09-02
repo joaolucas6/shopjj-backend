@@ -5,10 +5,11 @@ import com.joaolucas.shopjj.models.entities.Order;
 import com.joaolucas.shopjj.models.entities.Review;
 import com.joaolucas.shopjj.models.entities.User;
 import com.joaolucas.shopjj.models.enums.Gender;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
-public class UserDTO {
+public class UserDTO extends RepresentationModel<UserDTO> {
 
     private Long id;
     private String firstName;

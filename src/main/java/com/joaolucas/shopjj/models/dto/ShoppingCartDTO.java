@@ -2,11 +2,12 @@ package com.joaolucas.shopjj.models.dto;
 
 import com.joaolucas.shopjj.models.entities.Product;
 import com.joaolucas.shopjj.models.entities.ShoppingCart;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShoppingCartDTO {
+public class ShoppingCartDTO extends RepresentationModel<ShoppingCartDTO> {
 
     private Long id;
     private Long costumerId;

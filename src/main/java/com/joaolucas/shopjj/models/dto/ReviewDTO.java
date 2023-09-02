@@ -1,8 +1,9 @@
 package com.joaolucas.shopjj.models.dto;
 
 import com.joaolucas.shopjj.models.entities.Review;
+import org.springframework.hateoas.RepresentationModel;
 
-public class ReviewDTO {
+public class ReviewDTO extends RepresentationModel<ReviewDTO> {
 
     private Long id;
     private Long productId;

@@ -1,10 +1,11 @@
 package com.joaolucas.shopjj.models.dto;
 
 import com.joaolucas.shopjj.models.entities.Coupon;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
-public class CouponDTO {
+public class CouponDTO extends RepresentationModel<CouponDTO> {
     private Long id;
     private String name;
     private String description;

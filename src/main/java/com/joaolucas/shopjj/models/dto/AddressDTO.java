@@ -1,8 +1,9 @@
 package com.joaolucas.shopjj.models.dto;
 
 import com.joaolucas.shopjj.models.entities.Address;
+import org.springframework.hateoas.RepresentationModel;
 
-public class AddressDTO {
+public class AddressDTO extends RepresentationModel<AddressDTO> {
     private Long id;
     private String state;
     private String city;

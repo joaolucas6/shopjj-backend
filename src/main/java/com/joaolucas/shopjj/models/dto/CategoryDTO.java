@@ -2,10 +2,11 @@ package com.joaolucas.shopjj.models.dto;
 
 import com.joaolucas.shopjj.models.entities.Category;
 import com.joaolucas.shopjj.models.entities.Product;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
-public class CategoryDTO {
+public class CategoryDTO extends RepresentationModel<CategoryDTO> {
     private Long id;
     private String name;
     private String description;

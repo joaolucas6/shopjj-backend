@@ -4,11 +4,12 @@ import com.joaolucas.shopjj.models.entities.Category;
 import com.joaolucas.shopjj.models.entities.Product;
 import com.joaolucas.shopjj.models.entities.Promotion;
 import com.joaolucas.shopjj.models.entities.Review;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ProductDTO {
+public class ProductDTO  extends RepresentationModel<ProductDTO> {
 
     private Long id;
     private String name;

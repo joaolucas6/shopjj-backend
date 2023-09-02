@@ -2,11 +2,12 @@ package com.joaolucas.shopjj.models.dto;
 
 import com.joaolucas.shopjj.models.entities.Product;
 import com.joaolucas.shopjj.models.entities.Promotion;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class PromotionDTO {
+public class PromotionDTO extends RepresentationModel<PromotionDTO> {
     private Long id;
     private String description;
     private Double percentage;

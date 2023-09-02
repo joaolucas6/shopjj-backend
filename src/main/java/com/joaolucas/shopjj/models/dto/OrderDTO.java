@@ -3,6 +3,7 @@ package com.joaolucas.shopjj.models.dto;
 import com.joaolucas.shopjj.models.entities.*;
 import com.joaolucas.shopjj.models.enums.OrderStatus;
 import com.joaolucas.shopjj.models.enums.PaymentMethod;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OrderDTO {
+public class OrderDTO extends RepresentationModel<OrderDTO> {
     private Long id;
     private Long costumerId;
     private BigDecimal totalPrice;
