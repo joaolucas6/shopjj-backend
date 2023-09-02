@@ -1,5 +1,6 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.controllers.UserController;
 import com.joaolucas.shopjj.exceptions.BadRequestException;
 import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.UserDTO;
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -21,11 +25,11 @@ public class UserService {
     private final ShoppingCartRepository shoppingCartRepository;
 
     public List<UserDTO> findAll(){
-        return userRepository.findAll().stream().map(UserDTO::new).toList();
+        return userRepository.findAll().stream().map(user -> new UserDTO(user).add(linkTo(methodOn(UserController.class).findById(user.getId())).withSelfRel())).toList();
     }
 
     public UserDTO findById(Long id){
-        return new UserDTO(userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User was not found with ID: " + id)));
+        return new UserDTO(userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User was not found with ID: " + id))).add(linkTo(methodOn(UserController.class).findById(id)).withSelfRel());
     }
 
     public UserDTO create(UserDTO userDTO){
@@ -44,7 +48,9 @@ public class UserService {
 
         shoppingCartRepository.save(shoppingCart);
 
-        return new UserDTO(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+
+        return new UserDTO(savedUser).add(linkTo(methodOn(UserController.class).findById(savedUser.getId())).withSelfRel());
     }
 
     public UserDTO update(Long id, UserDTO userDTO){
@@ -56,7 +62,7 @@ public class UserService {
         if(userDTO.getEmail() != null) user.setEmail(userDTO.getEmail());
         if(userDTO.getGender() != null) user.setGender(userDTO.getGender());
 
-        return new UserDTO(userRepository.save(user));
+        return new UserDTO(userRepository.save(user)).add(linkTo(methodOn(UserController.class).findById(id)).withSelfRel());
     }
 
     public void delete(Long id){
