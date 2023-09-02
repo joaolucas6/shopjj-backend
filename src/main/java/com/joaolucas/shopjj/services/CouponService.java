@@ -1,5 +1,7 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.controllers.CouponController;
+import com.joaolucas.shopjj.controllers.OrderController;
 import com.joaolucas.shopjj.exceptions.BadRequestException;
 import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.CouponDTO;
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Service
 @RequiredArgsConstructor
 public class CouponService {
@@ -18,11 +23,11 @@ public class CouponService {
     private final CouponRepository couponRepository;
 
     public List<CouponDTO> findAll(){
-        return couponRepository.findAll().stream().map(CouponDTO::new).toList();
+        return couponRepository.findAll().stream().map(coupon -> new CouponDTO(coupon).add(linkTo(methodOn(CouponController.class).findById(coupon.getId())).withSelfRel())).toList();
     }
 
     public CouponDTO findById(Long id){
-        return new CouponDTO(couponRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Coupon was not found with ID: ")));
+        return new CouponDTO(couponRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Coupon was not found with ID: "))).add(linkTo(methodOn(CouponController.class).findById(id)).withSelfRel());
     }
 
     public CouponDTO create(CouponDTO couponDTO){
@@ -35,7 +40,9 @@ public class CouponService {
         coupon.setPercentage(couponDTO.getPercentage());
         coupon.setValidity(couponDTO.getValidity());
 
-        return new CouponDTO(couponRepository.save(coupon));
+        Coupon savedCoupon = couponRepository.save(coupon);
+
+        return new CouponDTO().add(linkTo(methodOn(CouponController.class).findById(savedCoupon.getId())).withSelfRel());
     }
 
     public CouponDTO update(Long id, CouponDTO couponDTO){
@@ -49,7 +56,9 @@ public class CouponService {
         if(couponDTO.getPercentage() != null) coupon.setPercentage(couponDTO.getPercentage());
         if(couponDTO.getValidity() != null) coupon.setValidity(couponDTO.getValidity());
 
-        return new CouponDTO(couponRepository.save(coupon));
+        Coupon savedCoupon = couponRepository.save(coupon);
+
+        return new CouponDTO().add(linkTo(methodOn(CouponController.class).findById(savedCoupon.getId())).withSelfRel());
     }
 
     public void delete(Long id){
