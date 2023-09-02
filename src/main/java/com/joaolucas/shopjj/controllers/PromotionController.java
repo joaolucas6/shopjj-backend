@@ -41,5 +41,16 @@ public class PromotionController {
         return ResponseEntity.ok().build();
     }
 
-    // add item  remove item
+    @PostMapping("/products/{promotionId}/{productId}")
+    public ResponseEntity<Void> addItem(@PathVariable Long promotionId, @PathVariable Long productId){
+        promotionService.addProduct(promotionId, productId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/products/{promotionId}/{productId}")
+    public ResponseEntity<Void> removeItem(@PathVariable Long promotionId, @PathVariable Long productId){
+        promotionService.removeProduct(promotionId, productId);
+        return ResponseEntity.ok().build();
+    }
+
 }
