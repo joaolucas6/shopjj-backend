@@ -60,27 +60,28 @@ public class PromotionService {
         promotionRepository.delete(promotion);
     }
 
-    public void addProducts(Long promotionId, List<Product> products){
+    public void addProduct(Long promotionId, Long productId){
         Promotion promotion = promotionRepository.findById(promotionId).orElseThrow(() -> new ResourceNotFoundException("Promotion was not found with ID: " + promotionId));
-        products.forEach(product -> {
-            if(promotion.getProducts().contains(product)) throw new ConflictException("Product is already on promotion!");
-            promotion.getProducts().add(product);
-            product.getPromotions().add(promotion);
-        });
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product was not found with ID: " + productId));
 
-        productRepository.saveAll(products);
+        if(promotion.getProducts().contains(product)) throw new ConflictException("Product is already on promotion!");
+        promotion.getProducts().add(product);
+        product.getPromotions().add(promotion);
+
+
+        productRepository.save(product);
         promotionRepository.save(promotion);
     }
 
-    public void removeProducts(Long promotionId, List<Product> products){
+    public void removeProduct(Long promotionId, Long productId){
         Promotion promotion = promotionRepository.findById(promotionId).orElseThrow(() -> new ResourceNotFoundException("Promotion was not found with ID: " + promotionId));
-        products.forEach(product -> {
-            if(!promotion.getProducts().contains(product)) throw new ConflictException("Product is not on promotion!");
-            promotion.getProducts().remove(product);
-            product.getPromotions().remove(promotion);
-        });
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product was not found with ID: " + productId));
 
-        productRepository.saveAll(products);
+        if(!promotion.getProducts().contains(product)) throw new ConflictException("Product is not on promotion!");
+        promotion.getProducts().remove(product);
+        product.getPromotions().remove(promotion);
+
+        productRepository.save(product);
         promotionRepository.save(promotion);
     }
 }
