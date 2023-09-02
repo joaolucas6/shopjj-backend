@@ -1,5 +1,6 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.exceptions.BadRequestException;
 import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
 import com.joaolucas.shopjj.models.dto.ShoppingCartDTO;
 import com.joaolucas.shopjj.models.entities.Product;
@@ -28,31 +29,30 @@ public class ShoppingCartService {
         return new ShoppingCartDTO(shoppingCartRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + id)));
     }
 
-    public void addItems(Long shoppingCartId, HashMap<Long, Integer> items){
+    public void addItem(Long shoppingCartId, Long productId, Integer quantity){
         ShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartId).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + shoppingCartId));
 
-        for(Map.Entry<Long, Integer> item : items.entrySet()){
-            Product product = productRepository.findById(item.getKey()).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + item.getKey()));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + productId));
 
-            if(shoppingCart.getInventory().containsKey(product)){
-                Integer oldValue = shoppingCart.getInventory().get(product);
-                shoppingCart.getInventory().replace(product, oldValue, oldValue + item.getValue());
-            }
-            else{
-                shoppingCart.getInventory().put(product, item.getValue());
-            }
+        if(shoppingCart.getInventory().containsKey(product)){
+            Integer oldValue = shoppingCart.getInventory().get(product);
+            shoppingCart.getInventory().replace(product, oldValue, oldValue + quantity);
+        }
+        else{
+            shoppingCart.getInventory().put(product, quantity);
         }
 
         shoppingCartRepository.save(shoppingCart);
     }
 
-    public void removeItems(Long shoppingCartId, HashMap<Long, Integer> items){
+    public void removeItem(Long shoppingCartId, Long productId, Integer quantity){
         ShoppingCart shoppingCart = shoppingCartRepository.findById(shoppingCartId).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + shoppingCartId));
 
-        for(Map.Entry<Long, Integer> item : items.entrySet()) {
-            Product product = productRepository.findById(item.getKey()).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + item.getKey()));
-            shoppingCart.getInventory().remove(product);
-        }
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Shopping cart was not found with ID: " + productId));
+
+        if(quantity > shoppingCart.getInventory().get(product)) throw new BadRequestException("Quantity to remove is bigger than the quantity of products at inventory");
+        else if(quantity.equals(shoppingCart.getInventory().get(product))) shoppingCart.getInventory().remove(product);
+        else shoppingCart.getInventory().replace(product, shoppingCart.getInventory().get(product), shoppingCart.getInventory().get(product) - quantity);
 
         shoppingCartRepository.save(shoppingCart);
     }
