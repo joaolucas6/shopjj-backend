@@ -1,5 +1,6 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.controllers.CategoryController;
 import com.joaolucas.shopjj.exceptions.BadRequestException;
 import com.joaolucas.shopjj.exceptions.ConflictException;
 import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -22,11 +26,11 @@ public class CategoryService {
     private final ProductRepository productRepository;
 
     public List<CategoryDTO> findAll(){
-        return categoryRepository.findAll().stream().map(CategoryDTO::new).toList();
+        return categoryRepository.findAll().stream().map(category -> new CategoryDTO(category).add(linkTo(methodOn(CategoryController.class).findById(category.getId())).withSelfRel())).toList();
     }
 
     public CategoryDTO findById(Long id){
-        return new CategoryDTO(categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category was not found with ID: " + id)));
+        return new CategoryDTO(categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category was not found with ID: " + id))).add(linkTo(methodOn(CategoryController.class).findById(id)).withSelfRel());
     }
 
     public CategoryDTO create(CategoryDTO categoryDTO){
@@ -37,7 +41,9 @@ public class CategoryService {
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
 
-        return new CategoryDTO(categoryRepository.save(category));
+        Category savedCategory = categoryRepository.save(category);
+
+        return new CategoryDTO(savedCategory).add(linkTo(methodOn(CategoryController.class).findById(savedCategory.getId())).withSelfRel());
     }
 
     public CategoryDTO update(Long id, CategoryDTO categoryDTO){
@@ -47,7 +53,7 @@ public class CategoryService {
         if(categoryDTO.getName() != null) category.setName(categoryDTO.getName());
         if(categoryDTO.getDescription() != null) category.setDescription(categoryDTO.getDescription());
 
-        return new CategoryDTO(categoryRepository.save(category));
+        return new CategoryDTO(categoryRepository.save(category)).add(linkTo(methodOn(CategoryController.class).findById(id)).withSelfRel());
 
     }
 
