@@ -4,10 +4,7 @@ import com.joaolucas.shopjj.models.dto.ShoppingCartDTO;
 import com.joaolucas.shopjj.services.ShoppingCartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,5 +25,15 @@ public class ShoppingCartController {
         return ResponseEntity.ok(shoppingCartService.findById(id));
     }
 
-    // addItem and removeItem
+    @PostMapping("/items/{shoppingCartId}/{productId}/{quantity}")
+    public ResponseEntity<Void> addItem(@PathVariable Long shoppingCartId, @PathVariable Long productId, @PathVariable Integer quantity){
+        shoppingCartService.addItem(shoppingCartId, productId, quantity);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/items/{shoppingCartId}/{productId}/{quantity}")
+    public ResponseEntity<Void> removeItem(@PathVariable Long shoppingCartId, @PathVariable Long productId, @PathVariable Integer quantity){
+        shoppingCartService.removeItem(shoppingCartId, productId, quantity);
+        return ResponseEntity.ok().build();
+    }
 }
