@@ -1,5 +1,6 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.controllers.PromotionController;
 import com.joaolucas.shopjj.exceptions.BadRequestException;
 import com.joaolucas.shopjj.exceptions.ConflictException;
 import com.joaolucas.shopjj.exceptions.ResourceNotFoundException;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Service
 @RequiredArgsConstructor
 public class PromotionService {
@@ -22,11 +26,11 @@ public class PromotionService {
     private final ProductRepository productRepository;
 
     public List<PromotionDTO> findAll(){
-        return promotionRepository.findAll().stream().map(PromotionDTO::new).toList();
+        return promotionRepository.findAll().stream().map(promotion -> new PromotionDTO(promotion).add(linkTo(methodOn(PromotionController.class).findById(promotion.getId())).withSelfRel())).toList();
     }
 
     public PromotionDTO findById(Long id){
-        return new PromotionDTO(promotionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Promotion was not found with ID: " + id)));
+        return new PromotionDTO(promotionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Promotion was not found with ID: " + id))).add(linkTo(methodOn(PromotionController.class).findById(id)).withSelfRel());
     }
 
     public PromotionDTO create(PromotionDTO promotionDTO){
@@ -39,8 +43,9 @@ public class PromotionService {
         promotion.setStartDate(promotionDTO.getStartDate());
         promotion.setEndDate(promotionDTO.getEndDate());
 
+        Promotion savedPromotion = promotionRepository.save(promotion);
 
-        return new PromotionDTO(promotionRepository.save(promotion));
+        return new PromotionDTO(savedPromotion).add(linkTo(methodOn(PromotionController.class).findById(savedPromotion.getId())).withSelfRel());
     }
     public PromotionDTO update(Long id, PromotionDTO promotionDTO){
         if(!DataValidation.isPromotionInfoValid(promotionDTO)) throw new BadRequestException("Promotion info is invalid!");
@@ -52,7 +57,7 @@ public class PromotionService {
         if(promotionDTO.getStartDate() != null) promotion.setStartDate(promotionDTO.getStartDate());
         if(promotionDTO.getEndDate() != null) promotion.setEndDate(promotionDTO.getEndDate());
 
-        return new PromotionDTO(promotionRepository.save(promotion));
+        return new PromotionDTO(promotionRepository.save(promotion)).add(linkTo(methodOn(PromotionController.class).findById(id)).withSelfRel());
     }
 
     public void delete(Long id){
