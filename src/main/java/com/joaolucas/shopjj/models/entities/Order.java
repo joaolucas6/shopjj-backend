@@ -26,7 +26,8 @@ public class Order {
     @Column(name = "total_price")
     private BigDecimal totalPrice;
 
-    @Column(name = "address")
+    @ManyToOne
+    @JoinColumn(name = "address_id")
     private Address address;
 
     @Column(name = "instant")

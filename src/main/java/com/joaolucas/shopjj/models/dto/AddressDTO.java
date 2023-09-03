@@ -1,7 +1,10 @@
 package com.joaolucas.shopjj.models.dto;
 
 import com.joaolucas.shopjj.models.entities.Address;
+import com.joaolucas.shopjj.models.entities.Order;
 import org.springframework.hateoas.RepresentationModel;
+
+import java.util.List;
 
 public class AddressDTO extends RepresentationModel<AddressDTO> {
     private Long id;
@@ -13,6 +16,7 @@ public class AddressDTO extends RepresentationModel<AddressDTO> {
     private String cep;
     private Long residentId;
 
+    private List<Long> ordersId;
     public AddressDTO(){
 
     }
@@ -26,6 +30,7 @@ public class AddressDTO extends RepresentationModel<AddressDTO> {
         setComplement(address.getComplement());
         setCep(address.getCep());
         setResidentId(address.getResident().getId());
+        setOrdersId(address.getOrders().stream().map(Order::getId).toList());
     }
 
     public Long getId() {
@@ -92,6 +97,14 @@ public class AddressDTO extends RepresentationModel<AddressDTO> {
         this.residentId = residentId;
     }
 
+    public List<Long> getOrdersId() {
+        return ordersId;
+    }
+
+    public void setOrdersId(List<Long> ordersId) {
+        this.ordersId = ordersId;
+    }
+
     @Override
     public String toString() {
         return "AddressDTO{" +
@@ -103,6 +116,7 @@ public class AddressDTO extends RepresentationModel<AddressDTO> {
                 ", complement='" + complement + '\'' +
                 ", cep='" + cep + '\'' +
                 ", residentId=" + residentId +
+                ", ordersId=" + ordersId +
                 '}';
     }
 }

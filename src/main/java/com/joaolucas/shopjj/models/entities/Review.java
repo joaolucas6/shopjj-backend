@@ -19,7 +19,7 @@ public class Review {
     @Column(name = "rating")
     private Double rating;
 
-    @Column(name = "rating", length = 2000)
+    @Column(name = "commentary", length = 2000)
     private String commentary;
 
     @ManyToOne

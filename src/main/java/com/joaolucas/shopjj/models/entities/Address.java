@@ -2,6 +2,8 @@ package com.joaolucas.shopjj.models.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -33,6 +35,9 @@ public class Address {
     @ManyToOne
     @JoinColumn(name = "resident_id")
     private User resident;
+
+    @OneToMany(mappedBy = "address")
+    private List<Order> orders = new ArrayList<>();
 
     public Address(){
 
@@ -113,6 +118,14 @@ public class Address {
         this.resident = resident;
     }
 
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -137,6 +150,7 @@ public class Address {
                 ", complement='" + complement + '\'' +
                 ", cep='" + cep + '\'' +
                 ", resident=" + resident +
+                ", orders=" + orders +
                 '}';
     }
 }
