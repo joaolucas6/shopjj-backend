@@ -3,6 +3,7 @@ package com.joaolucas.shopjj.config;
 import com.joaolucas.shopjj.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -32,6 +33,37 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**")
                         .permitAll()
+
+                        .requestMatchers(HttpMethod.PUT,  "/api/v1/promotions/**")
+                        .hasRole("MANAGER")
+
+                        .requestMatchers(HttpMethod.POST, "/api/v1/promotions/**")
+                        .hasRole("MANAGER")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/promotions/**")
+                        .hasRole("MANAGER")
+
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products/**")
+                        .hasRole("MANAGER")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/products/**")
+                        .hasRole("MANAGER")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**")
+                        .hasRole("MANAGER")
+
+                        .requestMatchers("/api/v1/coupons/**")
+                        .hasRole("MANAGER")
+
+                        .requestMatchers(HttpMethod.POST,"/api/v1/categories")
+                        .hasRole("MANAGER")
+
+                        .requestMatchers(HttpMethod.PUT,"/api/v1/categories")
+                        .hasRole("MANAGER")
+
+                        .requestMatchers(HttpMethod.DELETE,"/api/v1/categories")
+                        .hasRole("MANAGER")
+
                         .anyRequest()
                         .authenticated()
                 )
