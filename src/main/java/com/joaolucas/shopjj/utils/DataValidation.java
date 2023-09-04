@@ -1,6 +1,7 @@
 package com.joaolucas.shopjj.utils;
 
 import com.joaolucas.shopjj.models.dto.*;
+import com.joaolucas.shopjj.models.records.RegisterRequest;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -81,6 +82,15 @@ public class DataValidation {
         if(addressDTO.getStreet().length() > 150 || addressDTO.getStreet().isBlank()) return false;
         if(addressDTO.getComplement().length() > 150 || addressDTO.getComplement().isBlank()) return false;
         if(!(addressDTO.getCep().length() == 8) || addressDTO.getCep().isBlank()) return false;
+
+        return true;
+    }
+
+    public static boolean isRegisterRequestValid(RegisterRequest registerRequest){
+        if(registerRequest.firstName().length() > 50 || registerRequest.firstName().isBlank()) return false;
+        if(registerRequest.lastName().length() > 50 || registerRequest.lastName().isBlank()) return false;
+        if(registerRequest.email().isBlank() || !isEmailValid(registerRequest.email())) return false;
+        if(registerRequest.password().isBlank() || registerRequest.password().length() < 8 || registerRequest.password().length() > 30) return false;
 
         return true;
     }

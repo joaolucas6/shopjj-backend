@@ -1,11 +1,13 @@
 package com.joaolucas.shopjj.services;
 
+import com.joaolucas.shopjj.exceptions.BadRequestException;
 import com.joaolucas.shopjj.models.entities.User;
 import com.joaolucas.shopjj.models.records.AuthenticationRequest;
 import com.joaolucas.shopjj.models.records.AuthenticationResponse;
 import com.joaolucas.shopjj.models.records.RegisterRequest;
 import com.joaolucas.shopjj.models.records.RegisterResponse;
 import com.joaolucas.shopjj.repositories.UserRepository;
+import com.joaolucas.shopjj.utils.DataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +25,8 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public RegisterResponse register(RegisterRequest request){
+        if(!DataValidation.isRegisterRequestValid(request)) throw new BadRequestException("Register request info is invalid!");
+
         User user = new User();
 
         user.setFirstName(request.firstName());
