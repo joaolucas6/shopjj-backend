@@ -10,6 +10,9 @@ import com.joaolucas.shopjj.repositories.ShoppingCartRepository;
 import com.joaolucas.shopjj.repositories.UserRepository;
 import com.joaolucas.shopjj.utils.DataValidation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final ShoppingCartRepository shoppingCartRepository;
@@ -71,5 +74,8 @@ public class UserService {
     }
 
 
-
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException("User was not found with email: " + username));
+    }
 }
