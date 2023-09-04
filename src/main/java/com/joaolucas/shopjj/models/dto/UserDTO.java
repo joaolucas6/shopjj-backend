@@ -5,6 +5,7 @@ import com.joaolucas.shopjj.models.entities.Order;
 import com.joaolucas.shopjj.models.entities.Review;
 import com.joaolucas.shopjj.models.entities.User;
 import com.joaolucas.shopjj.models.enums.Gender;
+import com.joaolucas.shopjj.models.enums.Role;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class UserDTO extends RepresentationModel<UserDTO> {
     private String email;
     private String cpf;
     private Gender gender;
+
+    private Role role;
+
     private Long shoppingCartId;
     private List<Long> ordersId;
     private List<Long> addressesId;
@@ -34,6 +38,7 @@ public class UserDTO extends RepresentationModel<UserDTO> {
         setCpf(user.getCpf());
         setGender(user.getGender());
         setShoppingCartId(user.getShoppingCart().getId());
+        setRole(user.getRole());
         setOrdersId(user.getOrders().stream().map(Order::getId).toList());
         setAddressesId(user.getAddresses().stream().map(Address::getId).toList());
         setReviewsId(user.getReviews().stream().map(Review::getId).toList());
@@ -119,6 +124,14 @@ public class UserDTO extends RepresentationModel<UserDTO> {
         this.reviewsId = reviewsId;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -128,6 +141,7 @@ public class UserDTO extends RepresentationModel<UserDTO> {
                 ", email='" + email + '\'' +
                 ", cpf='" + cpf + '\'' +
                 ", gender=" + gender +
+                ", role=" + role +
                 ", shoppingCartId=" + shoppingCartId +
                 ", ordersId=" + ordersId +
                 ", addressesId=" + addressesId +

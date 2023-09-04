@@ -1,15 +1,20 @@
 package com.joaolucas.shopjj.models.entities;
 
 import com.joaolucas.shopjj.models.enums.Gender;
+import com.joaolucas.shopjj.models.enums.Role;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "tb_users")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +40,9 @@ public class User {
 
     @OneToOne(cascade = CascadeType.REMOVE)
     private ShoppingCart shoppingCart;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "costumer", cascade = CascadeType.REMOVE)
     private List<Order> orders = new ArrayList<>();
@@ -92,8 +100,38 @@ public class User {
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role));
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setPassword(String password) {
@@ -148,6 +186,14 @@ public class User {
         this.reviews = reviews;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -161,6 +207,8 @@ public class User {
         return Objects.hash(id);
     }
 
+
+
     @Override
     public String toString() {
         return "User{" +
@@ -172,6 +220,7 @@ public class User {
                 ", cpf='" + cpf + '\'' +
                 ", gender=" + gender +
                 ", shoppingCart=" + shoppingCart +
+                ", role=" + role +
                 ", orders=" + orders +
                 ", addresses=" + addresses +
                 ", reviews=" + reviews +
