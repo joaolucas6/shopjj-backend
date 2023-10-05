@@ -4,6 +4,7 @@ import com.joaolucas.shopjj.models.entities.Coupon;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class CouponDTO extends RepresentationModel<CouponDTO> {
     private Long id;
@@ -74,5 +75,18 @@ public class CouponDTO extends RepresentationModel<CouponDTO> {
                 ", percentage=" + percentage +
                 ", validity=" + validity +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CouponDTO couponDTO = (CouponDTO) o;
+        return Objects.equals(id, couponDTO.id) && Objects.equals(name, couponDTO.name) && Objects.equals(description, couponDTO.description) && Objects.equals(percentage, couponDTO.percentage) && Objects.equals(validity, couponDTO.validity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, name, description, percentage, validity);
     }
 }

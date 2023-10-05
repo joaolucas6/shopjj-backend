@@ -59,10 +59,10 @@ public class DataValidation {
 
     public static boolean isCouponInfoValid(CouponDTO couponDTO){
         if(isAllFieldsNull(couponDTO)) return false;
-        if(couponDTO.getName().length() > 30 || couponDTO.getName().isBlank()) return false;
-        if(couponDTO.getDescription().length() > 1000 || couponDTO.getDescription().isBlank()) return false;
-        if(couponDTO.getPercentage() >= 1 || couponDTO.getPercentage() <= 0) return false;
-        if(couponDTO.getValidity().isBefore(LocalDateTime.now())) return false;
+        if(couponDTO.getName() != null && couponDTO.getName().length() > 30 || couponDTO.getName() != null && couponDTO.getName().isBlank()) return false;
+        if(couponDTO.getDescription() != null && couponDTO.getDescription().length() > 1000 || couponDTO.getDescription() != null && couponDTO.getDescription().isBlank()) return false;
+        if(couponDTO.getPercentage() != null && couponDTO.getPercentage() >= 1 || couponDTO.getPercentage() != null && couponDTO.getPercentage() <= 0) return false;
+        if(couponDTO.getValidity() != null && couponDTO.getValidity().isBefore(LocalDateTime.now())) return false;
 
         return true;
     }
