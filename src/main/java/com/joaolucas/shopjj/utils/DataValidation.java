@@ -30,9 +30,9 @@ public class DataValidation {
 
     public static boolean isPromotionInfoValid(PromotionDTO promotionDTO){
         if(isAllFieldsNull(promotionDTO)) return false;
-        if(promotionDTO.getDescription().length() > 1000 || promotionDTO.getDescription().isBlank()) return false;
-        if(promotionDTO.getPercentage() >= 1 || promotionDTO.getPercentage() <= 0) return false;
-        if(promotionDTO.getStartDate().isAfter(promotionDTO.getEndDate())) return false;
+        if(promotionDTO.getDescription() != null && promotionDTO.getDescription().length() > 1000 || promotionDTO.getDescription() != null && promotionDTO.getDescription().isBlank()) return false;
+        if(promotionDTO.getPercentage() != null && promotionDTO.getPercentage() >= 1 || promotionDTO.getPercentage() != null && promotionDTO.getPercentage() <= 0) return false;
+        if(promotionDTO.getStartDate() != null && promotionDTO.getStartDate().isAfter(promotionDTO.getEndDate())) return false;
 
         return true;
     }

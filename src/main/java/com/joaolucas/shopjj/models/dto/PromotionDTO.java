@@ -6,6 +6,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class PromotionDTO extends RepresentationModel<PromotionDTO> {
     private Long id;
@@ -86,5 +87,18 @@ public class PromotionDTO extends RepresentationModel<PromotionDTO> {
                 ", endDate=" + endDate +
                 ", productsId=" + productsId +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PromotionDTO that = (PromotionDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(percentage, that.percentage) && Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate) && Objects.equals(productsId, that.productsId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, description, percentage, startDate, endDate, productsId);
     }
 }
