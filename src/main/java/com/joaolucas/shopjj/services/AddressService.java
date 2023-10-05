@@ -24,8 +24,6 @@ public class AddressService {
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
 
-
-
     public List<AddressDTO> findAll(){
         return addressRepository.findAll().stream().map(address -> new AddressDTO(address).add(linkTo(methodOn(AddressController.class).findById(address.getId())).withSelfRel())).toList();
     }
@@ -49,6 +47,8 @@ public class AddressService {
         address.setCep(addressDTO.getCep());
 
         Address savedAddress = addressRepository.save(address);
+
+        resident.getAddresses().add(address);
 
         return new AddressDTO(savedAddress).add(linkTo(methodOn(AddressController.class).findById(savedAddress.getId())).withSelfRel());
     }

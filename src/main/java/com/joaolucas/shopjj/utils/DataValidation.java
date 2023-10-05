@@ -77,11 +77,11 @@ public class DataValidation {
 
     public static boolean isAddressInfoValid(AddressDTO addressDTO){
         if(isAllFieldsNull(addressDTO)) return false;
-        if(addressDTO.getState().length() > 50 || addressDTO.getState().isBlank()) return false;
-        if(addressDTO.getCity().length() > 50 || addressDTO.getCity().isBlank()) return false;
-        if(addressDTO.getStreet().length() > 150 || addressDTO.getStreet().isBlank()) return false;
-        if(addressDTO.getComplement().length() > 150 || addressDTO.getComplement().isBlank()) return false;
-        if(!(addressDTO.getCep().length() == 8) || addressDTO.getCep().isBlank()) return false;
+        if(addressDTO.getState() != null && addressDTO.getState().length() > 50 || addressDTO.getState() != null && addressDTO.getState().isBlank()) return false;
+        if(addressDTO.getCity() != null && addressDTO.getCity().length() > 50 || addressDTO.getCity() != null && addressDTO.getCity().isBlank()) return false;
+        if(addressDTO.getStreet() != null && addressDTO.getStreet().length() > 150 || addressDTO.getStreet() != null && addressDTO.getStreet().isBlank()) return false;
+        if(addressDTO.getComplement() != null && addressDTO.getComplement().length() > 150 || addressDTO.getComplement() != null && addressDTO.getComplement().isBlank()) return false;
+        if(addressDTO.getCep() != null && addressDTO.getCep().length() != 8 || addressDTO.getCep() != null && addressDTO.getCep().isBlank()) return false;
 
         return true;
     }

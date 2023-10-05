@@ -5,6 +5,7 @@ import com.joaolucas.shopjj.models.entities.Order;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AddressDTO extends RepresentationModel<AddressDTO> {
     private Long id;
@@ -29,7 +30,7 @@ public class AddressDTO extends RepresentationModel<AddressDTO> {
         setNumber(address.getNumber());
         setComplement(address.getComplement());
         setCep(address.getCep());
-        setResidentId(address.getResident().getId());
+        if(address.getResident() != null) setResidentId(address.getResident().getId());
         setOrdersId(address.getOrders().stream().map(Order::getId).toList());
     }
 
@@ -118,5 +119,18 @@ public class AddressDTO extends RepresentationModel<AddressDTO> {
                 ", residentId=" + residentId +
                 ", ordersId=" + ordersId +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AddressDTO that = (AddressDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(state, that.state) && Objects.equals(city, that.city) && Objects.equals(street, that.street) && Objects.equals(number, that.number) && Objects.equals(complement, that.complement) && Objects.equals(cep, that.cep) && Objects.equals(residentId, that.residentId) && Objects.equals(ordersId, that.ordersId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, state, city, street, number, complement, cep, residentId, ordersId);
     }
 }
