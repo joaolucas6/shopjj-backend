@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class OrderDTO extends RepresentationModel<OrderDTO> {
     private Long id;
@@ -28,9 +29,9 @@ public class OrderDTO extends RepresentationModel<OrderDTO> {
 
     public OrderDTO(Order order){
         setId(order.getId());
-        setCostumerId(order.getCostumer().getId());
+        if(order.getCostumer() != null) setCostumerId(order.getCostumer().getId());
         setTotalPrice(order.getTotalPrice());
-        setAddressId(order.getAddress().getId());
+        if(order.getAddress() != null) setAddressId(order.getAddress().getId());
         setInstant(order.getInstant());
         setPaymentMethod(order.getPaymentMethod());
         setOrderStatus(order.getOrderStatus());
@@ -129,5 +130,18 @@ public class OrderDTO extends RepresentationModel<OrderDTO> {
                 ", inventory=" + inventory +
                 ", couponsId=" + couponsId +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderDTO orderDTO = (OrderDTO) o;
+        return Objects.equals(id, orderDTO.id) && Objects.equals(costumerId, orderDTO.costumerId) && Objects.equals(totalPrice, orderDTO.totalPrice) && Objects.equals(addressId, orderDTO.addressId) && Objects.equals(instant, orderDTO.instant) && paymentMethod == orderDTO.paymentMethod && orderStatus == orderDTO.orderStatus && Objects.equals(inventory, orderDTO.inventory) && Objects.equals(couponsId, orderDTO.couponsId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, costumerId, totalPrice, addressId, instant, paymentMethod, orderStatus, inventory, couponsId);
     }
 }

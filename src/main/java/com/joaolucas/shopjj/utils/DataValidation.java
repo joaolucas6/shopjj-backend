@@ -51,7 +51,7 @@ public class DataValidation {
     public static boolean isOrderInfoValid(OrderDTO orderDTO){
         if(isAllFieldsNull(orderDTO)) return false;
         for(Map.Entry<Long, Integer> entry : orderDTO.getInventory().entrySet()){
-            if(entry.getValue() <= 0) return false;
+            if(entry.getValue() != null && entry.getValue() <= 0) return false;
         }
 
         return true;

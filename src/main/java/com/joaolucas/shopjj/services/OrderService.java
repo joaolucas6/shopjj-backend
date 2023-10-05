@@ -69,7 +69,7 @@ public class OrderService {
             Integer quantity = entry.getValue();
 
             for(Promotion promotion : product.getPromotions()){
-                if(promotion.getStartDate().isBefore(LocalDateTime.now()) && promotion.getEndDate().isAfter(LocalDateTime.now())){
+                if(promotion.getStartDate() != null && promotion.getStartDate().isBefore(LocalDateTime.now()) && promotion.getStartDate() != null && promotion.getEndDate().isAfter(LocalDateTime.now())){
                     BigDecimal valueToDiscount = product.getPrice().multiply(BigDecimal.valueOf(promotion.getPercentage()));
                     product.setPrice(product.getPrice().min(valueToDiscount));
                 }
@@ -80,12 +80,17 @@ public class OrderService {
 
         orderDTO.getCouponsId().forEach(couponId -> {
             Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new ResourceNotFoundException("Coupon was not found with ID: " + couponId));
-            if(coupon.getValidity().isBefore(LocalDateTime.now())) throw new ConflictException("Coupon is expired!");
+            if(coupon.getPercentage() == null) return;
+            if(coupon.getValidity() != null && coupon.getValidity().isBefore(LocalDateTime.now())) throw new ConflictException("Coupon is expired!");
             BigDecimal valueToDiscount = order.getTotalPrice().multiply(BigDecimal.valueOf(coupon.getPercentage()));
             order.setTotalPrice(order.getTotalPrice().min(valueToDiscount));
         });
 
         Order savedOrder = orderRepository.save(order);
+
+        costumer.getOrders().add(savedOrder);
+
+        userRepository.save(costumer);
 
         return new OrderDTO(savedOrder).add(linkTo(methodOn(OrderController.class).findById(savedOrder.getId())).withSelfRel());
     }
