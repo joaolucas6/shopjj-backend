@@ -9,6 +9,7 @@ import com.joaolucas.shopjj.models.enums.Role;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
+import java.util.Objects;
 
 public class UserDTO extends RepresentationModel<UserDTO> {
 
@@ -37,7 +38,7 @@ public class UserDTO extends RepresentationModel<UserDTO> {
         setEmail(user.getEmail());
         setCpf(user.getCpf());
         setGender(user.getGender());
-        setShoppingCartId(user.getShoppingCart().getId());
+        if(user.getShoppingCart() != null) setShoppingCartId(user.getShoppingCart().getId());
         setRole(user.getRole());
         setOrdersId(user.getOrders().stream().map(Order::getId).toList());
         setAddressesId(user.getAddresses().stream().map(Address::getId).toList());
@@ -147,5 +148,18 @@ public class UserDTO extends RepresentationModel<UserDTO> {
                 ", addressesId=" + addressesId +
                 ", reviewsId=" + reviewsId +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return Objects.equals(id, userDTO.id) && Objects.equals(firstName, userDTO.firstName) && Objects.equals(lastName, userDTO.lastName) && Objects.equals(email, userDTO.email) && Objects.equals(cpf, userDTO.cpf) && gender == userDTO.gender && role == userDTO.role && Objects.equals(shoppingCartId, userDTO.shoppingCartId) && Objects.equals(ordersId, userDTO.ordersId) && Objects.equals(addressesId, userDTO.addressesId) && Objects.equals(reviewsId, userDTO.reviewsId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, firstName, lastName, email, cpf, gender, role, shoppingCartId, ordersId, addressesId, reviewsId);
     }
 }

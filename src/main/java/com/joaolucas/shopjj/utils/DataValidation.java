@@ -12,10 +12,10 @@ public class DataValidation {
 
     public static boolean isUserInfoValid(UserDTO userDTO){
         if(isAllFieldsNull(userDTO)) return false;
-        if(userDTO.getFirstName().length() > 50 || userDTO.getFirstName().isBlank()) return false;
-        if(userDTO.getLastName().length() > 50 || userDTO.getLastName().isBlank()) return false;
-        if(userDTO.getEmail().isBlank() || !isEmailValid(userDTO.getEmail())) return false;
-        if(userDTO.getCpf().isBlank() || !isCpfValid(userDTO.getCpf())) return false;
+        if(userDTO.getFirstName() != null && userDTO.getFirstName().length() > 50 || userDTO.getFirstName() != null && userDTO.getFirstName().isBlank()) return false;
+        if(userDTO.getLastName() != null && userDTO.getLastName().length() > 50 || userDTO.getLastName() != null &&  userDTO.getLastName().isBlank()) return false;
+        if(userDTO.getEmail() != null && userDTO.getEmail().isBlank() || userDTO.getEmail() != null && !isEmailValid(userDTO.getEmail())) return false;
+        if(userDTO.getCpf() != null && userDTO.getCpf().isBlank() || userDTO.getCpf() != null && !isCpfValid(userDTO.getCpf())) return false;
 
         return true;
     }
