@@ -3,6 +3,8 @@ package com.joaolucas.shopjj.models.dto;
 import com.joaolucas.shopjj.models.entities.Review;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.util.Objects;
+
 public class ReviewDTO extends RepresentationModel<ReviewDTO> {
 
     private Long id;
@@ -20,7 +22,7 @@ public class ReviewDTO extends RepresentationModel<ReviewDTO> {
         setProductId(review.getId());
         setRating(review.getRating());
         setCommentary(review.getCommentary());
-        setAuthorId(review.getAuthor().getId());
+        if(review.getAuthor() != null) setAuthorId(review.getAuthor().getId());
     }
 
     public Long getId() {
@@ -61,5 +63,18 @@ public class ReviewDTO extends RepresentationModel<ReviewDTO> {
 
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ReviewDTO reviewDTO = (ReviewDTO) o;
+        return Objects.equals(id, reviewDTO.id) && Objects.equals(productId, reviewDTO.productId) && Objects.equals(rating, reviewDTO.rating) && Objects.equals(commentary, reviewDTO.commentary) && Objects.equals(authorId, reviewDTO.authorId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, productId, rating, commentary, authorId);
     }
 }

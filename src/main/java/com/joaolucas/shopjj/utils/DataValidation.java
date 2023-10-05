@@ -22,8 +22,8 @@ public class DataValidation {
 
     public static boolean isReviewInfoValid(ReviewDTO reviewDTO){
         if(isAllFieldsNull(reviewDTO)) return false;
-        if(reviewDTO.getRating() > 10 || reviewDTO.getRating() < 0) return false;
-        if(reviewDTO.getCommentary().length() > 2000 || reviewDTO.getCommentary().isBlank()) return false;
+        if(reviewDTO.getRating() != null && reviewDTO.getRating() > 10 || reviewDTO.getRating() != null && reviewDTO.getRating() < 0) return false;
+        if(reviewDTO.getCommentary() != null && reviewDTO.getCommentary().length() > 2000 || reviewDTO.getCommentary() != null && reviewDTO.getCommentary().isBlank()) return false;
 
         return true;
     }
