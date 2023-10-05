@@ -69,8 +69,8 @@ public class DataValidation {
 
     public static boolean isCategoryInfoValid(CategoryDTO categoryDTO){
         if(isAllFieldsNull(categoryDTO)) return false;
-        if(categoryDTO.getName().length() > 100 || categoryDTO.getName().isBlank()) return false;
-        if(categoryDTO.getDescription().length() > 1000 || categoryDTO.getDescription().isBlank()) return false;
+        if(categoryDTO.getName() != null && categoryDTO.getName().length() > 100 || categoryDTO.getName() != null && categoryDTO.getName().isBlank()) return false;
+        if(categoryDTO.getDescription() != null && categoryDTO.getDescription().length() > 1000 || categoryDTO.getDescription() != null && categoryDTO.getDescription().isBlank()) return false;
 
         return true;
     }

@@ -5,6 +5,7 @@ import com.joaolucas.shopjj.models.entities.Product;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CategoryDTO extends RepresentationModel<CategoryDTO> {
     private Long id;
@@ -62,5 +63,18 @@ public class CategoryDTO extends RepresentationModel<CategoryDTO> {
                 ", description='" + description + '\'' +
                 ", productsId=" + productsId +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CategoryDTO that = (CategoryDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(productsId, that.productsId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, name, description, productsId);
     }
 }
