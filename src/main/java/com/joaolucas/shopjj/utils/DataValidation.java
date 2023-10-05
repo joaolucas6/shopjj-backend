@@ -39,11 +39,11 @@ public class DataValidation {
 
     public static boolean isProductInfoValid(ProductDTO productDTO){
         if(isAllFieldsNull(productDTO)) return false;
-        if(productDTO.getName().length() > 130 || productDTO.getName().isBlank()) return false;
-        if(productDTO.getDescription().length() > 3000 || productDTO.getDescription().isBlank()) return false;
-        if(productDTO.getImageUrl().isBlank()) return false;
-        if(productDTO.getPrice().intValueExact() <= 0) return false;
-        if(productDTO.getAvailableQuantity() < 0) return false;
+        if(productDTO.getName() != null && productDTO.getName().length() > 130 || productDTO.getName() != null && productDTO.getName().isBlank()) return false;
+        if(productDTO.getDescription() != null && productDTO.getDescription().length() > 3000 || productDTO.getDescription() != null && productDTO.getDescription().isBlank()) return false;
+        if(productDTO.getImageUrl() != null && productDTO.getImageUrl().isBlank()) return false;
+        if(productDTO.getPrice() != null && productDTO.getPrice().intValueExact() <= 0) return false;
+        if(productDTO.getAvailableQuantity() != null && productDTO.getAvailableQuantity() < 0) return false;
 
         return true;
     }

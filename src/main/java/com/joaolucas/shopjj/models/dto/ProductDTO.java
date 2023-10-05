@@ -8,6 +8,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 public class ProductDTO  extends RepresentationModel<ProductDTO> {
 
@@ -121,5 +122,18 @@ public class ProductDTO  extends RepresentationModel<ProductDTO> {
                 ", reviewsId=" + reviewsId +
                 ", promotionsId=" + promotionsId +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductDTO that = (ProductDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(imageUrl, that.imageUrl) && Objects.equals(price, that.price) && Objects.equals(availableQuantity, that.availableQuantity) && Objects.equals(categoriesId, that.categoriesId) && Objects.equals(reviewsId, that.reviewsId) && Objects.equals(promotionsId, that.promotionsId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, name, description, imageUrl, price, availableQuantity, categoriesId, reviewsId, promotionsId);
     }
 }
