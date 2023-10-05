@@ -6,6 +6,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ShoppingCartDTO extends RepresentationModel<ShoppingCartDTO> {
 
@@ -57,5 +58,18 @@ public class ShoppingCartDTO extends RepresentationModel<ShoppingCartDTO> {
                 ", costumerId=" + costumerId +
                 ", inventory=" + inventory +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ShoppingCartDTO that = (ShoppingCartDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(costumerId, that.costumerId) && Objects.equals(inventory, that.inventory);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, costumerId, inventory);
     }
 }
